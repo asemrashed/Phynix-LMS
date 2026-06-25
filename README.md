@@ -1,8 +1,8 @@
 # FX Prime Academy — Frontend
 
-Next.js 16 app for [FX Prime Academy](https://github.com/Adnan4141/fx-prime-frontend).
+Next.js 16 app for [FX Prime Academy](https://github.com/asemrashed/Phynix-LMS).
 
-This repo is half of a **polyrepo**: the API lives in [fx-prime-backend](https://github.com/Adnan4141/fx-prime-backend).
+This repo is half of a **polyrepo**: the API lives in [Phynix-server](https://github.com/asemrashed/Phynix-server).
 
 ## Local setup (polyrepo)
 
@@ -11,8 +11,8 @@ Clone both repos as **siblings** under one parent folder:
 ```bash
 mkdir finance-academy && cd finance-academy
 
-git clone git@github.com:Adnan4141/fx-prime-backend.git backend
-git clone git@github.com:Adnan4141/fx-prime-frontend.git frontend
+git clone git@github.com:asemrashed/Phynix-server.git backend
+git clone git@github.com:asemrashed/Phynix-LMS.git frontend
 ```
 
 Expected layout:
@@ -75,10 +75,10 @@ bun run test:e2e
 ## Docs
 
 - [Admin guide](./docs/ADMIN.md)
-- Backend API: [backend/docs/API.md](https://github.com/Adnan4141/fx-prime-backend/blob/main/docs/API.md)
-- Deploy: [backend/docs/DEPLOY.md](https://github.com/Adnan4141/fx-prime-backend/blob/main/docs/DEPLOY.md)
+- Backend API: [backend/docs/API.md](https://github.com/asemrashed/Phynix-server/blob/main/docs/API.md)
+- Deploy: [backend/docs/DEPLOY.md](https://github.com/asemrashed/Phynix-server/blob/main/docs/DEPLOY.md)
 
 ## GitHub
 
-- **Repo:** [Adnan4141/fx-prime-frontend](https://github.com/Adnan4141/fx-prime-frontend)
+- **Repo:** [asemrashed/Phynix-LMS](https://github.com/asemrashed/Phynix-LMS)
 - **CI:** `.github/workflows/ci.yml` — build + optional VPS deploy on `main`
