@@ -1,10 +1,10 @@
 "use client"
 
 import Link from "next/link"
-import Image from "next/image"
-import { Play, Clock, CheckCircle2 } from "lucide-react"
+import { Play, Clock } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
+import { AppImage } from "@/components/ui/app-image"
 import { motion } from "framer-motion"
 
 interface ProgressCardProps {
@@ -37,27 +37,17 @@ export function ProgressCard({
       className="group overflow-hidden rounded-[20px] bg-card shadow-sm transition-all hover:shadow-lg"
     >
       <div className="flex flex-col sm:flex-row">
-        {/* Image */}
         <div className="relative aspect-video w-full sm:aspect-square sm:w-48">
-          <Image
-            src={image}
-            alt={title}
-            fill
-            className="object-cover"
-          />
+          <AppImage src={image} alt={title} fill className="object-cover" />
           <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
             <Play className="h-12 w-12 text-white" />
           </div>
         </div>
 
-        {/* Content */}
         <div className="flex flex-1 flex-col p-4">
           <div className="flex-1">
-            <h3 className="mb-2 font-semibold text-foreground line-clamp-2">
-              {title}
-            </h3>
-            
-            {/* Progress */}
+            <h3 className="mb-2 line-clamp-2 font-semibold text-foreground">{title}</h3>
+
             <div className="mb-3 space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">
@@ -68,7 +58,6 @@ export function ProgressCard({
               <Progress value={progress} className="h-2" />
             </div>
 
-            {/* Meta */}
             <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
               {nextLesson && (
                 <div className="flex items-center gap-1">
@@ -85,7 +74,6 @@ export function ProgressCard({
             </div>
           </div>
 
-          {/* CTA */}
           <div className="mt-4">
             <Link href={href}>
               <Button className="w-full rounded-xl sm:w-auto">

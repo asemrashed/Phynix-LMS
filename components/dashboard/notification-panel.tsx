@@ -102,6 +102,14 @@ function toAppPath(link: string): string {
   }
 }
 
+function isLiveNotification(type: string) {
+  return (
+    type.startsWith("LIVE_SESSION") ||
+    type === "SESSION_CANCELLED" ||
+    type.startsWith("MENTOR_")
+  )
+}
+
 export function NotificationPanel({
   notifications,
   unreadCount,
@@ -116,6 +124,7 @@ export function NotificationPanel({
   error = null,
 }: NotificationPanelProps) {
   const router = useRouter()
+  const visibleNotifications = notifications.filter((n) => !isLiveNotification(n.type))
 
   const handleOpen = (notification: NotificationItem) => {
     if (!notification.isRead) {
@@ -215,7 +224,7 @@ export function NotificationPanel({
           </div>
         ) : (
           <div className="divide-y divide-border">
-            {notifications.map((notification) => {
+            {visibleNotifications.map((notification) => {
               const Icon = notificationIcon(notification.type)
               return (
                 <div

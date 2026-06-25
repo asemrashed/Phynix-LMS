@@ -1,6 +1,6 @@
 export const DEFAULT_COURSE_OUTCOMES: Record<string, string[]> = {
   ENGLISH: [
-    "Understand the IELTS exam format and scoring system",
+    "Understand the English exam format and scoring system",
     "Improve Listening, Reading, Writing, and Speaking skills",
     "Practice with mock tests and exam-style tasks",
     "Learn time management and test-taking strategies",

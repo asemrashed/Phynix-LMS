@@ -3,9 +3,10 @@
 import dynamic from "next/dynamic"
 import type { VideoTokenResponse } from "@fxprime/types"
 import { Spinner } from "@/components/ui/spinner"
+import { cn } from "@/lib/utils"
 
-const YoutubePlayer = dynamic(
-  () => import("@/components/youtube-player").then((m) => m.YoutubePlayer),
+const ProtectedVideoPlayer = dynamic(
+  () => import("@/components/protected-video-player").then((m) => m.ProtectedVideoPlayer),
   {
     ssr: false,
     loading: () => (
@@ -16,8 +17,9 @@ const YoutubePlayer = dynamic(
   }
 )
 
-const Html5VideoPlayer = dynamic(
-  () => import("@/components/html5-video-player").then((m) => m.Html5VideoPlayer),
+const ControlledYoutubePlayer = dynamic(
+  () =>
+    import("@/components/controlled-youtube-player").then((m) => m.ControlledYoutubePlayer),
   {
     ssr: false,
     loading: () => (
@@ -30,6 +32,8 @@ const Html5VideoPlayer = dynamic(
 
 interface CourseVideoPlayerProps {
   playback: VideoTokenResponse
+  courseId: string
+  lessonId: string
   watermarkText: string
   onWatchProgress?: (position: number, completed?: boolean) => void
   className?: string
@@ -37,30 +41,52 @@ interface CourseVideoPlayerProps {
 
 export function CourseVideoPlayer({
   playback,
+  courseId,
+  lessonId,
   watermarkText,
   onWatchProgress,
   className,
 }: CourseVideoPlayerProps) {
-  const common = {
-    watermarkText,
-    startPosition: playback.watchPosition,
-    duration: playback.duration,
-    isCompleted: playback.isCompleted,
-    onWatchProgress,
-    className,
+  if (!playback.sessionToken) {
+    return (
+      <div
+        className={cn(
+          "flex aspect-video items-center justify-center rounded-[20px] bg-muted px-6 text-center text-sm text-muted-foreground",
+          className
+        )}
+      >
+        Video playback unavailable.
+      </div>
+    )
   }
 
-  if (playback.provider === "YOUTUBE" && playback.embedUrl) {
-    return <YoutubePlayer embedUrl={playback.embedUrl} {...common} />
-  }
-
-  if (playback.provider === "SELF_HOSTED" && playback.streamUrl) {
-    return <Html5VideoPlayer streamUrl={playback.streamUrl} {...common} />
+  if (playback.provider === "YOUTUBE") {
+    return (
+      <ControlledYoutubePlayer
+        courseId={courseId}
+        lessonId={lessonId}
+        sessionToken={playback.sessionToken}
+        watermarkText={watermarkText}
+        startPosition={playback.watchPosition}
+        duration={playback.duration}
+        isCompleted={playback.isCompleted}
+        onWatchProgress={onWatchProgress}
+        className={className}
+      />
+    )
   }
 
   return (
-    <div className="flex aspect-video items-center justify-center rounded-[20px] bg-muted text-sm text-muted-foreground">
-      Video playback unavailable
-    </div>
+    <ProtectedVideoPlayer
+      courseId={courseId}
+      lessonId={lessonId}
+      sessionToken={playback.sessionToken}
+      watermarkText={watermarkText}
+      startPosition={playback.watchPosition}
+      duration={playback.duration}
+      isCompleted={playback.isCompleted}
+      onWatchProgress={onWatchProgress}
+      className={className}
+    />
   )
 }

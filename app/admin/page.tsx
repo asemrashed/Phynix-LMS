@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { api } from "@/lib/api"
 import type { AdminStats } from "@fxprime/types"
-import { Users, BookOpen, GraduationCap, DollarSign, Calendar, Flag, RefreshCw } from "lucide-react"
+import { Users, BookOpen, GraduationCap, DollarSign, Flag, RefreshCw } from "lucide-react"
 import { AdminStatCard, AdminStatCardSkeleton } from "@/components/admin/admin-stat-card"
 import { Button } from "@/components/ui/button"
 import { usePullToRefresh } from "@/hooks/use-pull-to-refresh"
@@ -12,7 +12,7 @@ import { getApiErrorMessage } from "@/lib/api-errors"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 
-const STAT_COUNT = 7
+const STAT_COUNT = 5
 
 export default function AdminPage() {
   const [stats, setStats] = useState<AdminStats | null>(null)
@@ -52,13 +52,6 @@ export default function AdminPage() {
       value: stats ? formatMoney(stats.revenueMonth) : "—",
       icon: DollarSign,
       color: "bg-sidebar-accent text-sidebar-accent-foreground",
-    },
-    {
-      label: "Upcoming Live Sessions",
-      value: stats?.upcomingLiveSessions ?? "—",
-      icon: Calendar,
-      color: "bg-indigo-50 text-indigo-700",
-      href: "/admin/sessions",
     },
     {
       label: "Reported Posts",

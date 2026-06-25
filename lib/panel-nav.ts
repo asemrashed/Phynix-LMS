@@ -2,18 +2,14 @@ import type { LucideIcon } from "lucide-react"
 import {
   LayoutDashboard,
   BookOpen,
-  Package,
   GraduationCap,
   UserCircle,
-  ShoppingBag,
   Users,
   Bookmark,
-  Heart,
   BarChart3,
   Settings,
   FileText,
   CreditCard,
-  Calendar,
   Clock,
   MessageSquare,
   Quote,
@@ -50,15 +46,6 @@ export const STUDENT_NAV: PanelNavGroup[] = [
     ],
   },
   {
-    group: "Discover & Buy",
-    items: [
-      { href: "/dashboard/products", label: "Browse Products", icon: Package },
-      { href: "/dashboard/wishlist", label: "Wishlist", icon: Heart },
-      { href: "/dashboard/orders", label: "Orders", icon: ShoppingBag },
-      { href: "/dashboard/installments", label: "Installments", icon: CreditCard },
-    ],
-  },
-  {
     group: "Connect",
     items: [
       { href: "/dashboard/community", label: "Community", icon: Users },
@@ -87,23 +74,10 @@ export const ADMIN_NAV: PanelNavGroup[] = [
     ],
   },
   {
-    group: "Catalog & Sales",
-    items: [
-      { href: "/admin/products", label: "Products", icon: Package },
-      { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
-    ],
-  },
-  {
     group: "People",
     items: [
       { href: "/admin/users", label: "Users", icon: Users },
       { href: "/admin/community", label: "Community", icon: MessagesSquare },
-    ],
-  },
-  {
-    group: "Live & Support",
-    items: [
-      { href: "/admin/sessions", label: "Live Sessions", icon: Calendar },
       { href: "/admin/inquiries", label: "Contact Inquiries", icon: MessageSquare },
     ],
   },

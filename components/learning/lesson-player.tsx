@@ -51,13 +51,13 @@ export function LessonPlayer({
 }: LessonPlayerProps) {
   const progressSavingRef = useRef(false)
 
-  const submitProgress = async (body: Record<string, unknown>) => {
+  const submitProgress = async (body: Record<string, unknown>, reload = true) => {
     const result = await api<LessonProgressResult>(
       `/courses/${courseId}/lessons/${lesson.id}/progress`,
       { method: "POST", body: JSON.stringify(body) }
     )
     onProgress(result)
-    onLessonReload()
+    if (reload) onLessonReload()
     return result
   }
 
@@ -73,8 +73,8 @@ export function LessonPlayer({
           { method: "POST", body: JSON.stringify(body) }
         )
         onProgress(result)
-      } catch (err) {
-        console.error("Failed to save watch position:", err)
+      } catch {
+        // progress save failed silently
       } finally {
         progressSavingRef.current = false
       }
@@ -94,6 +94,8 @@ export function LessonPlayer({
     return (
       <VideoPlayer
         playback={videoToken}
+        courseId={courseId}
+        lessonId={lesson.id}
         watermarkText={watermarkText}
         onWatchProgress={handleWatchProgress}
       />
@@ -123,7 +125,10 @@ export function LessonPlayer({
         attemptsRemaining={lessonDetail.quizAttemptsRemaining}
         saving={saving}
         onSubmit={async (answers) => {
-          const result = await submitProgress({ quizAnswers: answers })
+          const result = await submitProgress({ quizAnswers: answers }, false)
+          if (result.quizPassed) {
+            onLessonReload()
+          }
           return result
         }}
       />

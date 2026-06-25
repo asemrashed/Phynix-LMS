@@ -2,10 +2,9 @@
 
 import { useEffect, useState, useRef, useCallback } from "react"
 import { cn } from "@/lib/utils"
-import { extractYoutubeIdFromEmbedUrl } from "@/lib/video-source"
 
 interface YoutubePlayerProps {
-  embedUrl: string
+  videoId: string
   watermarkText: string
   startPosition?: number
   duration?: number
@@ -78,7 +77,7 @@ function loadYoutubeApi() {
 }
 
 export function YoutubePlayer({
-  embedUrl,
+  videoId,
   watermarkText,
   startPosition = 0,
   duration = 0,
@@ -90,7 +89,6 @@ export function YoutubePlayer({
   const playerRef = useRef<YtPlayer | null>(null)
   const lastSavedRef = useRef(0)
   const [positionIndex, setPositionIndex] = useState(0)
-  const videoId = extractYoutubeIdFromEmbedUrl(embedUrl)
 
   const saveProgress = useCallback(
     (seconds: number, forceComplete?: boolean) => {
@@ -131,7 +129,7 @@ export function YoutubePlayer({
           modestbranding: 1,
           playsinline: 1,
           origin: window.location.origin,
-          start: startPosition > 0 ? Math.floor(startPosition) : undefined,
+          ...(startPosition > 0 ? { start: Math.floor(startPosition) } : {}),
         },
         events: {
           onReady: (event) => {
@@ -168,12 +166,12 @@ export function YoutubePlayer({
       playerRef.current?.destroy()
       playerRef.current = null
     }
-  }, [videoId, embedUrl, startPosition, duration, saveProgress])
+  }, [videoId, startPosition, duration, saveProgress])
 
   if (!videoId) {
     return (
       <div className="flex aspect-video items-center justify-center rounded-[20px] bg-muted text-sm text-muted-foreground">
-        Invalid YouTube video
+        Video unavailable
       </div>
     )
   }

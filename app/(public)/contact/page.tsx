@@ -5,9 +5,9 @@ import { ContactFaq } from "@/components/contact/contact-faq"
 import { ContactFormHeader, ContactPageHeader } from "@/components/contact/contact-page-header"
 
 export const metadata: Metadata = {
-  title: "Contact Us — IELTS LMS",
+  title: "Contact Us — PhynixEducation",
   description:
-    "Get in touch with IELTS LMS for course help, payments, live sessions, and general support.",
+    "Get in touch with PhynixEducation for course help, payments, live sessions, and general support.",
 }
 
 export default function ContactPage() {

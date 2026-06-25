@@ -30,7 +30,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { format } from "date-fns"
 import { Monitor, Smartphone } from "lucide-react"
 
-const ASSIGNABLE_ROLES: Role[] = ["STUDENT", "ADMIN", "INSTRUCTOR"]
+const ASSIGNABLE_ROLES: Role[] = ["STUDENT", "ADMIN"]
 
 export default function AdminUserDetailPage() {
   const params = useParams()

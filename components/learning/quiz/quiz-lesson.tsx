@@ -36,47 +36,57 @@ export function QuizLesson({
     getSubmitAnswers,
     allAnswered,
     answeredCount,
-    showResult,
-    setShowResult,
     resetAttempt,
   } = useQuizAttempt(content)
 
-  const [lastResult, setLastResult] = useState<LessonProgressResult | null>(null)
+  const [failedResult, setFailedResult] = useState<LessonProgressResult | null>(null)
+  const [passedResult, setPassedResult] = useState<LessonProgressResult | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const timerActive = !isCompleted && !showResult && attemptsRemaining > 0
+  const timerActive = !isCompleted && !failedResult && !passedResult && attemptsRemaining > 0
   const timeRemaining = useQuizTimer(content.timeLimitSeconds, timerActive)
 
-  if (isCompleted) {
-    return <QuizReviewPanel content={content} score={previousScore} />
+  if (isCompleted || passedResult) {
+    return (
+      <QuizReviewPanel
+        content={content}
+        score={previousScore ?? passedResult?.quizScore ?? null}
+      />
+    )
+  }
+
+  if (failedResult) {
+    return (
+      <div className="rounded-[20px] bg-card p-6 shadow-sm space-y-4">
+        <QuizResultPanel
+          content={content}
+          result={failedResult}
+          onRetry={
+            (failedResult.quizAttemptsRemaining ?? 0) > 0
+              ? () => {
+                  setFailedResult(null)
+                  resetAttempt()
+                }
+              : undefined
+          }
+        />
+      </div>
+    )
   }
 
   const handleSubmit = async () => {
     setError(null)
     try {
       const result = await onSubmit(getSubmitAnswers())
-      setLastResult(result)
-      setShowResult(true)
+      if (result.quizPassed) {
+        setPassedResult(result)
+      } else {
+        setFailedResult(result)
+      }
     } catch (err) {
       const apiErr = err as { message?: string }
       setError(apiErr.message || "Failed to submit quiz")
     }
-  }
-
-  if (showResult && lastResult) {
-    return (
-      <div className="rounded-[20px] bg-card p-6 shadow-sm space-y-4">
-        <QuizResultPanel
-          content={content}
-          result={lastResult}
-          onRetry={
-            (lastResult.quizAttemptsRemaining ?? 0) > 0 && !lastResult.quizPassed
-              ? resetAttempt
-              : undefined
-          }
-        />
-      </div>
-    )
   }
 
   const canSubmit =
@@ -96,9 +106,8 @@ export function QuizLesson({
       <QuizProgress answered={answeredCount} total={questions.length} />
 
       {attemptsRemaining === 0 ? (
-        <p className="text-sm text-destructive">
-          You have used all {content.maxAttempts} attempts. Contact your instructor if you
-          need help.
+        <p className="text-sm text-muted-foreground">
+          You have used all {content.maxAttempts} attempts.
         </p>
       ) : (
         <>

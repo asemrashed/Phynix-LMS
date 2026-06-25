@@ -16,7 +16,7 @@ export const DEFAULT_CONTACT_PAGE: ContactPageContent = {
   eyebrow: "Contact",
   title: "Get in touch",
   description:
-    "Questions about courses, payments, or live sessions? Our team supports students in Bangladesh and worldwide.",
+    "Questions about courses and payments? Our team supports students in Bangladesh and worldwide.",
   formTitle: "Send us a message",
   formSubtitle: "Fill out the form and we'll get back to you within 24–48 hours.",
 }
@@ -37,17 +37,15 @@ function buildDefaultSocialLinks(): FooterSocialLink[] {
 }
 
 export const DEFAULT_FOOTER: FooterContent = {
-  brandName: "IELTS LMS",
+  brandName: "PhynixEducation",
   brandTagline:
-    "Premium IELTS preparation platform for students in Bangladesh and worldwide. Learn with structured courses, live classes, and verified certificates.",
+    "Premium English learning platform for students in Bangladesh and worldwide. Learn with structured courses and verified certificates.",
   quickLinksTitle: "Quick Links",
   companyLinksTitle: "Company",
   contactTitle: "Contact",
   socialTitle: "Connect With Us",
   quickLinks: [
     { href: "/courses", label: "All Courses" },
-    { href: "/courses?free=true", label: "Free Courses" },
-    { href: "/live", label: "Live Sessions" },
     { href: "/blog", label: "Blog" },
   ],
   companyLinks: [
@@ -63,7 +61,7 @@ export const DEFAULT_FOOTER: FooterContent = {
     { href: "/cookies", label: "Cookies" },
   ],
   socialLinks: buildDefaultSocialLinks(),
-  copyrightText: "IELTS LMS. All rights reserved.",
+  copyrightText: "PhynixEducation. All rights reserved.",
 }
 
 export const DEFAULT_SITE_SETTINGS: PublicSiteSettings = {
@@ -79,13 +77,13 @@ export const DEFAULT_SITE_SETTINGS: PublicSiteSettings = {
 export const DEFAULT_HOMEPAGE_SECTIONS: Record<string, PublicHomepageSection> = {
   hero: {
     key: "hero",
-    eyebrow: "Professional IELTS Preparation",
-    title: "Master IELTS with Expert-Led Preparation",
+    eyebrow: "Professional English Preparation",
+    title: "Master English with Expert-Led Preparation",
     description:
       "Build Listening, Reading, Writing, and Speaking skills through structured courses, live classes, and mock tests designed for serious test-takers.",
     items: [],
     ctaPrimary: { label: "Join Course", href: "/courses" },
-    ctaSecondary: { label: "View Pricing", href: "/pricing" },
+    ctaSecondary: { label: "Browse Courses", href: "/courses" },
     metadata: null,
   },
   risk_disclaimer: {
@@ -93,7 +91,7 @@ export const DEFAULT_HOMEPAGE_SECTIONS: Record<string, PublicHomepageSection> = 
     eyebrow: null,
     title: null,
     description:
-      "IELTS scores depend on individual effort and preparation. Content is for educational purposes only. IELTS LMS does not guarantee specific band scores or exam outcomes.",
+      "Learning outcomes depend on individual effort and preparation. Content is for educational purposes only. PhynixEducation does not guarantee specific exam results.",
     items: [],
     ctaPrimary: null,
     ctaSecondary: null,
@@ -108,7 +106,7 @@ export const DEFAULT_HOMEPAGE_SECTIONS: Record<string, PublicHomepageSection> = 
       { icon: "Building2", title: "UK Registered Company", description: "" },
       { icon: "Users", title: "1000+ Students", description: "", statKey: "students" },
       { icon: "LineChart", title: "Live Practice Sessions", description: "" },
-      { icon: "UserCheck", title: "Expert Instruction", description: "" },
+      { icon: "UserCheck", title: "Expert Teaching", description: "" },
     ],
     ctaPrimary: null,
     ctaSecondary: null,
@@ -119,18 +117,18 @@ export const DEFAULT_HOMEPAGE_SECTIONS: Record<string, PublicHomepageSection> = 
     eyebrow: "Free Resources",
     title: "Free Learning Hub",
     description:
-      "Everything you need to start — courses, videos, ebooks, and IELTS tips at no cost",
+      "Everything you need to start — courses, videos, ebooks, and English tips at no cost",
     items: [
       {
         icon: "BookOpen",
         title: "Free Course",
-        description: "Start learning IELTS fundamentals at zero cost",
+        description: "Start learning English fundamentals at zero cost",
         href: "/courses?free=true",
       },
       {
         icon: "Youtube",
         title: "YouTube Channel",
-        description: "Free IELTS lessons, tips, and speaking practice",
+        description: "Free English lessons, tips, and speaking practice",
         href: process.env.NEXT_PUBLIC_YOUTUBE_URL || "https://www.youtube.com",
         external: true,
       },
@@ -142,9 +140,9 @@ export const DEFAULT_HOMEPAGE_SECTIONS: Record<string, PublicHomepageSection> = 
       },
       {
         icon: "TrendingUp",
-        title: "IELTS Tips & Strategies",
+        title: "English Tips & Strategies",
         description: "Writing templates, speaking topics & exam strategies explained",
-        href: "/blog/category/ielts-tips",
+        href: "/blog/category/english-tips",
       },
     ],
     ctaPrimary: null,
@@ -166,34 +164,39 @@ export const DEFAULT_HOMEPAGE_SECTIONS: Record<string, PublicHomepageSection> = 
   },
   why_choose: {
     key: "why_choose",
-    eyebrow: "Why IELTS LMS",
+    eyebrow: "Why PhynixEducation",
     title: "Why Choose Us",
-    description: "Everything you need to become a confident, well-prepared IELTS candidate",
+    description: "Everything you need to master English with confidence",
     items: [
       {
-        icon: "Video",
-        title: "Live Classes",
-        description: "Interactive sessions with speaking practice, writing feedback, and Q&A",
-      },
-      {
-        icon: "Infinity",
-        title: "Lifetime Access",
-        description: "Revisit course materials and updates whenever you need them",
-      },
-      {
-        icon: "Users",
-        title: "Study Community",
-        description: "Connect with fellow students, share tips, and grow together",
-      },
-      {
-        icon: "Bot",
-        title: "AI Learning Tools",
-        description: "Smart quizzes, progress tracking, and AI-powered study aids",
+        icon: "GraduationCap",
+        title: "Complete English Learning Journey",
+        description:
+          "Learn from Basic to Advanced English through structured, step-by-step lessons.",
       },
       {
         icon: "ClipboardCheck",
-        title: "Practical Assignments",
-        description: "Apply what you learn with mock tests and graded writing tasks",
+        title: "Interactive Practice & Assessments",
+        description:
+          "Strengthen your skills with quizzes, exercises, and real-life practice activities.",
+      },
+      {
+        icon: "BookOpen",
+        title: "Expert-Designed Curriculum",
+        description:
+          "Our courses are carefully created to help you improve grammar, vocabulary, speaking, writing, and pronunciation.",
+      },
+      {
+        icon: "Globe",
+        title: "Learn Anytime, Anywhere",
+        description:
+          "Access your lessons 24/7 on any device and study at your own pace.",
+      },
+      {
+        icon: "Award",
+        title: "Certificate of Completion",
+        description:
+          "Earn a certificate after successfully completing the course to showcase your achievement.",
       },
     ],
     ctaPrimary: null,
@@ -203,18 +206,18 @@ export const DEFAULT_HOMEPAGE_SECTIONS: Record<string, PublicHomepageSection> = 
   final_cta: {
     key: "final_cta",
     eyebrow: null,
-    title: "Start Your IELTS Journey Today",
+    title: "Start Your English Journey Today",
     description:
-      "Join thousands of students preparing for IELTS with live classes and a thriving study community.",
+      "Join thousands of students preparing for English with live classes and a thriving study community.",
     items: [],
     ctaPrimary: { label: "Join Course", href: "/courses" },
-    ctaSecondary: { label: "View Pricing", href: "/pricing" },
+    ctaSecondary: { label: "Browse Courses", href: "/courses" },
     metadata: null,
   },
   featured_courses: {
     key: "featured_courses",
     eyebrow: "Featured Courses",
-    title: "Start Your IELTS Journey",
+    title: "Start Your English Journey",
     description: "English courses from beginner basics to advanced band 7+ preparation",
     items: [],
     ctaPrimary: { label: "View All Courses", href: "/courses" },
@@ -223,7 +226,7 @@ export const DEFAULT_HOMEPAGE_SECTIONS: Record<string, PublicHomepageSection> = 
   },
   latest_insights: {
     key: "latest_insights",
-    eyebrow: "IELTS Insights",
+    eyebrow: "English Insights",
     title: "Latest Insights & Blog",
     description: "Speaking topics, writing templates, vocabulary tips, and exam strategies",
     items: [],
@@ -231,7 +234,7 @@ export const DEFAULT_HOMEPAGE_SECTIONS: Record<string, PublicHomepageSection> = 
     ctaSecondary: null,
     metadata: {
       emptyMessage:
-        "New IELTS tips coming soon. Check back for speaking topics, writing strategies, and study guides.",
+        "New English tips coming soon. Check back for speaking topics, writing strategies, and study guides.",
     },
   },
   testimonials: {
@@ -250,18 +253,18 @@ export const DEFAULT_HOMEPAGE_SECTIONS: Record<string, PublicHomepageSection> = 
 const DEFAULT_PAGES: Record<string, Omit<PublicSitePage, "updatedAt">> = {
   about: {
     slug: "about",
-    title: "About IELTS LMS",
-    description: "Professional IELTS preparation for students in Bangladesh and worldwide.",
-    contentHtml: `<p>IELTS LMS is a dedicated IELTS preparation platform helping students achieve their target band scores through structured courses, live classes, mock tests, and mentor support.</p>`,
-    seoTitle: "About Us — IELTS LMS",
-    seoDescription: "Learn about IELTS LMS — professional IELTS preparation platform.",
+    title: "About PhynixEducation",
+    description: "Professional English preparation for students in Bangladesh and worldwide.",
+    contentHtml: `<p>PhynixEducation is a dedicated English preparation platform helping students achieve their target band scores through structured courses, live classes, mock tests, and mentor support.</p>`,
+    seoTitle: "About Us — PhynixEducation",
+    seoDescription: "Learn about PhynixEducation — professional English preparation platform.",
   },
   terms: {
     slug: "terms",
     title: "Terms & Conditions",
     description: null,
-    contentHtml: `<p>Last updated: June 2026</p><h2>Acceptance of Terms</h2><p>By accessing IELTS LMS, you agree to these terms.</p>`,
-    seoTitle: "Terms & Conditions — IELTS LMS",
+    contentHtml: `<p>Last updated: June 2026</p><h2>Acceptance of Terms</h2><p>By accessing PhynixEducation, you agree to these terms.</p>`,
+    seoTitle: "Terms & Conditions — PhynixEducation",
     seoDescription: null,
   },
   "privacy-policy": {
@@ -269,7 +272,7 @@ const DEFAULT_PAGES: Record<string, Omit<PublicSitePage, "updatedAt">> = {
     title: "Privacy Policy",
     description: null,
     contentHtml: `<p>Last updated: June 2026</p><h2>Information We Collect</h2><p>We collect information you provide when registering or enrolling.</p>`,
-    seoTitle: "Privacy Policy — IELTS LMS",
+    seoTitle: "Privacy Policy — PhynixEducation",
     seoDescription: null,
   },
   "refund-policy": {
@@ -277,7 +280,7 @@ const DEFAULT_PAGES: Record<string, Omit<PublicSitePage, "updatedAt">> = {
     title: "Refund Policy",
     description: null,
     contentHtml: `<p>Last updated: June 2026</p><h2>Digital Courses &amp; Products</h2><p>Refund requests may be submitted within 7 days of purchase.</p>`,
-    seoTitle: "Refund Policy — IELTS LMS",
+    seoTitle: "Refund Policy — PhynixEducation",
     seoDescription: null,
   },
   cookies: {
@@ -285,7 +288,7 @@ const DEFAULT_PAGES: Record<string, Omit<PublicSitePage, "updatedAt">> = {
     title: "Cookie Policy",
     description: null,
     contentHtml: `<p>Last updated: June 2026</p><h2>What Are Cookies</h2><p>Cookies are small text files stored on your device.</p>`,
-    seoTitle: "Cookie Policy — IELTS LMS",
+    seoTitle: "Cookie Policy — PhynixEducation",
     seoDescription: null,
   },
 }

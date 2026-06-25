@@ -15,7 +15,6 @@ import { useUrlFilter } from "@/lib/use-admin-url-state"
 const ROLE_OPTIONS = [
   { value: "all", label: "All roles" },
   { value: "STUDENT", label: "Student" },
-  { value: "INSTRUCTOR", label: "Instructor" },
   { value: "ADMIN", label: "Admin" },
   { value: "SUPER_ADMIN", label: "Super admin" },
 ]

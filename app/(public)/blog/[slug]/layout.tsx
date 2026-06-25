@@ -24,10 +24,10 @@ export async function generateMetadata({
   const site = getSiteUrl()
 
   if (!post) {
-    return { title: "Blog | IELTS LMS" }
+    return { title: "Blog | PhynixEducation" }
   }
 
-  const title = post.metaTitle || `${post.title} | IELTS LMS`
+  const title = post.metaTitle || `${post.title} | PhynixEducation`
   const description =
     post.metaDesc || post.excerpt || defaultOg.description
   const image = buildOgImage(post.coverUrl)

@@ -12,10 +12,10 @@ export function getApiUrl(): string {
 }
 
 export const defaultOg = {
-  siteName: "IELTS LMS",
-  title: "IELTS LMS — Professional IELTS Preparation Courses",
+  siteName: "PhynixEducation",
+  title: "PhynixEducation — Professional English Preparation Courses",
   description:
-    "Professional IELTS preparation in English. Structured courses, live classes, mock tests, and verifiable certificates.",
+    "Structured English courses, live classes, mock tests, and verifiable certificates.",
   type: "website" as const,
 }
 

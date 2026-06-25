@@ -233,7 +233,7 @@ export function SiteFooterEditor() {
               className={`mt-1 ${fieldClassName}`}
               value={footer.copyrightText}
               onChange={(e) => setFooter((prev) => ({ ...prev, copyrightText: e.target.value }))}
-              placeholder="IELTS LMS. All rights reserved."
+              placeholder="PhynixEducation. All rights reserved."
             />
           </div>
         </div>

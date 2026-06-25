@@ -1,7 +1,7 @@
 export function buildPricingUrl(sessionId?: string | null): string {
-  if (!sessionId) return "/pricing"
+  if (!sessionId) return "/live"
   const params = new URLSearchParams({ sessionId })
-  return `/pricing?${params.toString()}`
+  return `/live?${params.toString()}`
 }
 
 export function buildLiveHubUrl(options?: {

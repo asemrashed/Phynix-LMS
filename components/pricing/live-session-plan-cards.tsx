@@ -28,7 +28,7 @@ export const LIVE_SESSION_PLANS: LiveSessionPlanCard[] = [
     priceNote: "with account",
     badge: "FREE",
     description:
-      "Join public webinars — perfect for getting started and exploring IELTS LMS.",
+      "Join public webinars — perfect for getting started and exploring PhynixEducation.",
     features: [
       "Public webinars on /live",
       "Register with a free account",

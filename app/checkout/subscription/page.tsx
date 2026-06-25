@@ -197,7 +197,7 @@ function SubscriptionCheckoutContent() {
                 <Link href="/refund-policy" className="underline hover:text-primary">
                   Refund Policy
                 </Link>
-                . IELTS preparation content only — not official exam advice.
+                . English preparation content only — not official exam advice.
               </p>
             </div>
 

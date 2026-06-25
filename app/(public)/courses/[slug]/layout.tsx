@@ -23,10 +23,10 @@ export async function generateMetadata({
   const site = getSiteUrl()
 
   if (!course) {
-    return { title: "Course | IELTS LMS" }
+    return { title: "Course | PhynixEducation" }
   }
 
-  const title = `${course.title} | IELTS LMS`
+  const title = `${course.title} | PhynixEducation`
   const description = stripHtml(course.description).slice(0, 160)
   const image = buildOgImage(course.thumbnailUrl)
 

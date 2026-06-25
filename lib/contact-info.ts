@@ -1,4 +1,4 @@
-export const SUPPORT_EMAIL = "support@ieltslms.com"
+export const SUPPORT_EMAIL = "support@englishlms.com"
 
 export const OFFICE_ADDRESS = {
   line1: "128 City Road",
@@ -49,7 +49,7 @@ export const CONTACT_FAQ = [
       "No. Anyone can submit the contact form. If you are logged in, we automatically link your inquiry to your account for faster support.",
   },
   {
-    question: "Where is IELTS LMS located?",
+    question: "Where is PhynixEducation located?",
     answer:
       "Our office is at 128 City Road, London, EC1V 2NX. Online support is available for students worldwide.",
   },

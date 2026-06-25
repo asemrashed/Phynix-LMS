@@ -24,7 +24,7 @@ export function PremiumPaywall({
   title = "Premium Content",
   description = "Upgrade to PRO or Lifetime to unlock the full article and all premium resources.",
   className,
-  loginRedirect = "/pricing",
+  loginRedirect = "/courses",
   isLoggedIn = false,
 }: PremiumPaywallProps) {
   return (
@@ -50,7 +50,7 @@ export function PremiumPaywall({
           </Button>
         )}
         <Button asChild className="rounded-xl">
-          <Link href="/pricing">View Plans & Upgrade</Link>
+          <Link href="/courses">View Courses</Link>
         </Button>
       </CardContent>
     </Card>

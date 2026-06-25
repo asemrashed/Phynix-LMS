@@ -6,7 +6,7 @@ import { mergeSitePage } from "@/lib/site-content-defaults"
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = mergeSitePage("terms", await fetchServerApi<PublicSitePage>("/site/pages/terms"))
-  return { title: page?.seoTitle ?? "Terms & Conditions — IELTS LMS" }
+  return { title: page?.seoTitle ?? "Terms & Conditions — PhynixEducation" }
 }
 
 export default async function TermsPage() {

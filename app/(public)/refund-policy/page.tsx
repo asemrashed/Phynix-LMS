@@ -9,7 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
     "refund-policy",
     await fetchServerApi<PublicSitePage>("/site/pages/refund-policy")
   )
-  return { title: page?.seoTitle ?? "Refund Policy — IELTS LMS" }
+  return { title: page?.seoTitle ?? "Refund Policy — PhynixEducation" }
 }
 
 export default async function RefundPolicyPage() {

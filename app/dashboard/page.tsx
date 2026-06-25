@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { PortfolioCard } from "@/components/dashboard/portfolio-card"
 import { ContinueLearning } from "@/components/dashboard/continue-learning"
 import { LearningStreakWidget } from "@/components/dashboard/learning-streak-widget"
-import { UpcomingSessionsWidget } from "@/components/dashboard/upcoming-sessions-widget"
 import {
   Empty,
   EmptyDescription,
@@ -93,8 +92,6 @@ export default function DashboardPage() {
         {!loading && <ContinueLearning courses={continueCourses} />}
         <LearningStreakWidget goals={learningGoals} loading={loading} />
       </div>
-
-      <UpcomingSessionsWidget />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="rounded-[20px] bg-card p-6 shadow-sm">

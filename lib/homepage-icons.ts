@@ -9,6 +9,7 @@ import {
   ClipboardCheck,
   FileText,
   Globe,
+  GraduationCap,
   Handshake,
   Infinity,
   LineChart,
@@ -19,6 +20,7 @@ import {
   Users,
   Video,
   Youtube,
+  Award,
 } from "lucide-react"
 
 const ICON_MAP: Record<string, LucideIcon> = {
@@ -41,6 +43,8 @@ const ICON_MAP: Record<string, LucideIcon> = {
   FileText,
   LineChart,
   UserCheck,
+  GraduationCap,
+  Award,
 }
 
 export function getHomepageIcon(name?: string): LucideIcon {

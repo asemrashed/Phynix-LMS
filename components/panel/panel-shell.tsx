@@ -89,6 +89,7 @@ export function PanelShell({
     <div className="flex min-h-screen flex-col bg-background">
       <DashboardTopbar
         homeHref={homeHref}
+        brandHref="/"
         onMenuClick={() => setSidebarOpen(!sidebarOpen)}
         unreadCount={unreadCount}
         plan={subscriptionPlan}

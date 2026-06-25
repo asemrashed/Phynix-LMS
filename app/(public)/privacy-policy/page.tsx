@@ -9,7 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
     "privacy-policy",
     await fetchServerApi<PublicSitePage>("/site/pages/privacy-policy")
   )
-  return { title: page?.seoTitle ?? "Privacy Policy — IELTS LMS" }
+  return { title: page?.seoTitle ?? "Privacy Policy — PhynixEducation" }
 }
 
 export default async function PrivacyPolicyPage() {

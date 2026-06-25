@@ -3,32 +3,24 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useForm, Controller } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { useAuth, ApiError } from "@/lib/auth-context"
 import { getSettingsPath } from "@/lib/get-default-panel"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
-import { REGISTER_COUNTRIES } from "@/lib/countries"
+import { BRAND_MONOGRAM, BRAND_NAME } from "@/lib/brand"
 
 const schema = z.object({
   firstName: z.string().trim().min(1, "First name required"),
   lastName: z.string().trim().min(1, "Last name required"),
   email: z.string().trim().email("Valid email required"),
   phone: z.string().trim().optional(),
-  country: z.string().trim().min(1, "Country required"),
   password: z.string().trim().min(8, "Password must be at least 8 characters"),
 })
 
@@ -43,13 +35,9 @@ export default function RegisterPage() {
   const {
     register,
     handleSubmit,
-    control,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      country: "Bangladesh",
-    },
   })
 
   const onSubmit = async (data: FormData) => {
@@ -73,13 +61,13 @@ export default function RegisterPage() {
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
-              <span className="text-lg font-bold text-primary-foreground">IL</span>
+              <span className="text-lg font-bold text-primary-foreground">{BRAND_MONOGRAM}</span>
             </div>
-            <span className="text-xl font-bold text-foreground">IELTS LMS</span>
+            <span className="text-xl font-bold text-foreground">{BRAND_NAME}</span>
           </Link>
           <h1 className="mt-6 text-2xl font-bold text-foreground">Create Account</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Start your IELTS preparation journey
+            Start your English learning journey
           </p>
         </div>
 
@@ -139,30 +127,6 @@ export default function RegisterPage() {
               placeholder="+880..."
               {...register("phone")}
             />
-          </div>
-          <div>
-            <Label>Country</Label>
-            <Controller
-              name="country"
-              control={control}
-              render={({ field }) => (
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className="mt-1 rounded-xl">
-                    <SelectValue placeholder="Select country" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {REGISTER_COUNTRIES.map((country) => (
-                      <SelectItem key={country} value={country}>
-                        {country}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            {errors.country && (
-              <p className="mt-1 text-sm text-destructive">{errors.country.message}</p>
-            )}
           </div>
           <div>
             <Label htmlFor="password">Password</Label>

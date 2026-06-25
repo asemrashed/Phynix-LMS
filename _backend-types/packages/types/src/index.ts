@@ -182,6 +182,8 @@ export interface LessonItem {
   duration: number
   order: number
   isFree: boolean
+  /** True when a free video lesson has an uploaded/configured video source */
+  previewAvailable?: boolean
   isCompleted?: boolean
   watchPosition?: number
 }
@@ -260,8 +262,7 @@ export interface TextLessonContent {
 }
 
 export interface VideoLessonContent {
-  provider: VideoProvider
-  videoRef: string | null
+  ready: true
 }
 
 export type StudentLessonContent =
@@ -296,13 +297,17 @@ export interface LessonProgressResult {
 
 export interface VideoTokenResponse {
   provider: VideoProvider
-  embedUrl?: string
   streamUrl?: string
   expiresAt: string
   watchPosition: number
   duration: number
   sessionToken: string
   isCompleted: boolean
+}
+
+export interface VideoPlayMeta {
+  kind: "youtube" | "file"
+  title: string
 }
 
 // ─── Payments ────────────────────────────────────────────────────────

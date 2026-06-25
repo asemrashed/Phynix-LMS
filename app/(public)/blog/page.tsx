@@ -8,7 +8,7 @@ export default function BlogPage() {
             Blog & Market Analysis
           </h1>
           <p className="mt-4 text-muted-foreground">
-            IELTS education articles, study tips, and exam strategies
+            English education articles, study tips, and exam strategies
           </p>
         </div>
         <BlogListing />

@@ -21,19 +21,12 @@ export function QuizLessonEditor({ value, onChange }: QuizLessonEditorProps) {
     moveQuestion,
   } = useQuizContent(value, onChange)
 
-  const { passThreshold, maxAttempts, shuffleQuestions, shuffleOptions, timeLimitSeconds, questions } =
-    content
+  const { passThreshold, questions } = content
 
   return (
     <div className="space-y-4">
       <QuizSettingsForm
-        settings={{
-          passThreshold,
-          maxAttempts,
-          shuffleQuestions,
-          shuffleOptions,
-          timeLimitSeconds,
-        }}
+        settings={{ passThreshold, maxAttempts: content.maxAttempts, shuffleQuestions: false, shuffleOptions: false }}
         onChange={updateSettings}
       />
 

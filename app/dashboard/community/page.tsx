@@ -473,7 +473,7 @@ export default function CommunityPage() {
                 rows={4}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="Share your IELTS study tips, questions, or practice insights..."
+                placeholder="Share your English study tips, questions, or practice insights..."
               />
             </div>
             <div className="flex justify-end gap-2">

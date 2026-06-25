@@ -107,7 +107,7 @@ export default function VerifyCertificatePage() {
   const shareLink = async () => {
     if (navigator.share) {
       await navigator.share({
-        title: "IELTS LMS Certificate",
+        title: "PhynixEducation Certificate",
         text: `Verify certificate for ${result?.studentName}`,
         url: verifyUrl,
       })
@@ -123,7 +123,7 @@ export default function VerifyCertificatePage() {
         <div className="mx-auto max-w-lg text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
             <Award className="h-4 w-4" />
-            IELTS LMS — Certificate Verification
+            PhynixEducation — Certificate Verification
           </div>
         </div>
 
@@ -173,7 +173,7 @@ export default function VerifyCertificatePage() {
               </h1>
               <p className="mt-2 text-sm text-muted-foreground">
                 {result.valid
-                  ? "This certificate is officially issued by IELTS LMS"
+                  ? "This certificate is officially issued by PhynixEducation"
                   : "This certificate is no longer valid"}
               </p>
               <Badge
@@ -212,7 +212,7 @@ export default function VerifyCertificatePage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Platform</span>
-                  <span className="font-medium">IELTS LMS</span>
+                  <span className="font-medium">PhynixEducation</span>
                 </div>
               </div>
 

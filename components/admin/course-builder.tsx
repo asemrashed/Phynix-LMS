@@ -7,7 +7,7 @@ import { api } from "@/lib/api"
 import { uploadThumbnail } from "@/lib/upload"
 import { getMediaUrl } from "@/lib/media-url"
 import { stripHtml, toRichTextHtml } from "@/lib/strip-html"
-import type { AdminCourseDetail, AdminInstructorItem, CourseFaqItem, CourseLevel } from "@fxprime/types"
+import type { AdminCourseDetail, CourseFaqItem, CourseLevel } from "@fxprime/types"
 import { createCourseSchema, updateCourseSchema } from "@/lib/schemas/admin-course"
 import { getApiErrorMessage } from "@/lib/api-errors"
 import {
@@ -17,7 +17,6 @@ import {
 import { CourseAdminInsights } from "@/components/admin/course-admin-insights"
 import { ReorderableStringList } from "@/components/admin/reorderable-string-list"
 import { RichTextEditor } from "@/components/admin/rich-text-editor"
-import { DateTimePicker } from "@/components/ui/date-time-picker"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -47,7 +46,6 @@ import { ArrowLeft, ExternalLink, Plus, Trash2 } from "lucide-react"
 
 interface CourseBuilderProps {
   initialCourse?: AdminCourseDetail
-  instructors: AdminInstructorItem[]
   mode: "create" | "edit"
 }
 
@@ -69,7 +67,7 @@ function parseOptionalDate(iso: string | null | undefined) {
   return Number.isNaN(date.getTime()) ? undefined : date
 }
 
-export function CourseBuilder({ initialCourse, instructors, mode }: CourseBuilderProps) {
+export function CourseBuilder({ initialCourse, mode }: CourseBuilderProps) {
   const router = useRouter()
   const params = useParams()
   const urlSlug = params.slug as string | undefined
@@ -96,9 +94,6 @@ export function CourseBuilder({ initialCourse, instructors, mode }: CourseBuilde
     initialCourse?.originalPrice != null ? String(initialCourse.originalPrice) : ""
   )
   const [level, setLevel] = useState<CourseLevel>(initialCourse?.level ?? "BEGINNER")
-  const [instructorId, setInstructorId] = useState(
-    initialCourse?.instructorId ?? instructors[0]?.id ?? ""
-  )
   const [isFeatured, setIsFeatured] = useState(initialCourse?.isFeatured ?? false)
   const [learningOutcomes, setLearningOutcomes] = useState<string[]>(
     initialCourse?.learningOutcomes?.length ? initialCourse.learningOutcomes : [""]
@@ -238,7 +233,6 @@ export function CourseBuilder({ initialCourse, instructors, mode }: CourseBuilde
         currency: COURSE_CURRENCY,
         level,
         language: COURSE_LANGUAGE,
-        instructorId,
         isFeatured,
       }
 
@@ -288,7 +282,7 @@ export function CourseBuilder({ initialCourse, instructors, mode }: CourseBuilde
         router.replace(`/admin/course/${updated.slug}`)
       }
       setIsDirty(false)
-      toast.success("Course saved")
+      toast.success("Draft saved")
       return updated
     } catch (error) {
       toast.error(getApiErrorMessage(error, "Failed to save course"))
@@ -305,7 +299,6 @@ export function CourseBuilder({ initialCourse, instructors, mode }: CourseBuilde
     discountEndsAt,
     faqs,
     highlights,
-    instructorId,
     isFeatured,
     learningOutcomes,
     level,
@@ -444,27 +437,8 @@ export function CourseBuilder({ initialCourse, instructors, mode }: CourseBuilde
                 </Button>
               )}
               <Button className="rounded-xl" onClick={() => void saveMetadata()} disabled={saving}>
-                {saving ? "Saving…" : isDirty ? "Save changes" : "Save"}
+                {saving ? "Saving…" : isDirty ? "Save draft" : "Save draft"}
               </Button>
-              {course?.status !== "PUBLISHED" && (
-                <Button
-                  className="rounded-xl"
-                  variant="secondary"
-                  onClick={() => void publishCourse()}
-                >
-                  Publish
-                </Button>
-              )}
-              {course?.status === "PUBLISHED" && (
-                <>
-                  <Button variant="outline" className="rounded-xl" onClick={() => void updateStatus("DRAFT")}>
-                    Unpublish
-                  </Button>
-                  <Button variant="outline" className="rounded-xl" onClick={() => void updateStatus("ARCHIVED")}>
-                    Archive
-                  </Button>
-                </>
-              )}
               {course && (
                 <Button
                   variant="outline"
@@ -498,9 +472,6 @@ export function CourseBuilder({ initialCourse, instructors, mode }: CourseBuilde
               disabled={!course}
             >
               Students
-            </TabsTrigger>
-            <TabsTrigger value="settings" className="rounded-lg px-4 data-[state=active]:bg-muted">
-              Settings
             </TabsTrigger>
           </TabsList>
         </div>
@@ -581,6 +552,27 @@ export function CourseBuilder({ initialCourse, instructors, mode }: CourseBuilde
                   }}
                 />
               </div>
+              <div className="space-y-2">
+                <Label>Difficulty level</Label>
+                <Select
+                  value={level}
+                  onValueChange={(v) => {
+                    markDirty()
+                    setLevel(v as CourseLevel)
+                  }}
+                >
+                  <SelectTrigger className="rounded-xl">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white">
+                    {LEVELS.map((l) => (
+                      <SelectItem key={l} value={l}>
+                        {l.charAt(0) + l.slice(1).toLowerCase()}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="space-y-4 rounded-[20px] border bg-card p-6 shadow-sm">
@@ -649,128 +641,24 @@ export function CourseBuilder({ initialCourse, instructors, mode }: CourseBuilde
                 setLearningOutcomes(items)
               }}
               onRemove={removeOutcome}
-              placeholder="e.g. Understand the IELTS exam format and scoring"
+              placeholder="e.g. Understand the English exam format and scoring"
             />
           </div>
         </TabsContent>
 
         <TabsContent value="marketing" className="mt-0 space-y-6">
-          <div className="grid gap-6 lg:grid-cols-2">
-            <div className="space-y-4 rounded-[20px] border bg-card p-6 shadow-sm">
-              <div className="space-y-2">
-                <Label htmlFor="subtitle">Hero subtitle</Label>
-                <Textarea
-                  id="subtitle"
-                  className="min-h-[80px] rounded-xl"
-                  value={subtitle}
-                  onChange={(e) => {
-                    markDirty()
-                    setSubtitle(e.target.value)
-                  }}
-                  placeholder="Short tagline shown under the course title"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="badgeLabel">Badge label</Label>
-                <Input
-                  id="badgeLabel"
-                  className="rounded-xl"
-                  value={badgeLabel}
-                  onChange={(e) => {
-                    markDirty()
-                    setBadgeLabel(e.target.value)
-                  }}
-                  placeholder="e.g. Live Course, Self-paced"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="deliveryType">Delivery type</Label>
-                <Input
-                  id="deliveryType"
-                  className="rounded-xl"
-                  value={deliveryType}
-                  onChange={(e) => {
-                    markDirty()
-                    setDeliveryType(e.target.value)
-                  }}
-                  placeholder="e.g. Live Online, Recorded"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="classSchedule">Class schedule</Label>
-                <Input
-                  id="classSchedule"
-                  className="rounded-xl"
-                  value={classSchedule}
-                  onChange={(e) => {
-                    markDirty()
-                    setClassSchedule(e.target.value)
-                  }}
-                  placeholder="e.g. 9:00 PM - 10:30 PM"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-4 rounded-[20px] border bg-card p-6 shadow-sm">
-              <h2 className="font-semibold">Pricing & urgency</h2>
-              <div className="space-y-2">
-                <Label htmlFor="discountEndsAt">Discount ends at</Label>
-                <DateTimePicker
-                  id="discountEndsAt"
-                  value={discountEndsAt}
-                  onChange={(date) => {
-                    markDirty()
-                    setDiscountEndsAt(date)
-                  }}
-                  placeholder="No discount deadline"
-                  className="w-full"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="startsAt">Course starts at</Label>
-                <DateTimePicker
-                  id="startsAt"
-                  value={startsAt}
-                  onChange={(date) => {
-                    markDirty()
-                    setStartsAt(date)
-                  }}
-                  placeholder="No start date"
-                  className="w-full"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="seatLimit">Seat limit</Label>
-                  <Input
-                    id="seatLimit"
-                    type="number"
-                    min={1}
-                    className="rounded-xl"
-                    value={seatLimit}
-                    onChange={(e) => {
-                      markDirty()
-                      setSeatLimit(e.target.value)
-                    }}
-                    placeholder="Optional"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="refundDays">Refund window (days)</Label>
-                  <Input
-                    id="refundDays"
-                    type="number"
-                    min={0}
-                    max={90}
-                    className="rounded-xl"
-                    value={refundDays}
-                    onChange={(e) => {
-                      markDirty()
-                      setRefundDays(e.target.value)
-                    }}
-                    placeholder="e.g. 7"
-                  />
-                </div>
+          <div className="rounded-[20px] border bg-card p-6 shadow-sm">
+            <div className="flex items-center gap-3">
+              <Switch
+                checked={isFeatured}
+                onCheckedChange={(checked) => {
+                  markDirty()
+                  setIsFeatured(checked)
+                }}
+              />
+              <div>
+                <Label>Featured course</Label>
+                <p className="text-xs text-muted-foreground">Show on homepage highlights</p>
               </div>
             </div>
           </div>
@@ -859,7 +747,13 @@ export function CourseBuilder({ initialCourse, instructors, mode }: CourseBuilde
 
         <TabsContent value="curriculum" className="mt-0">
           {course ? (
-            <CourseCurriculumBuilder course={course} onCourseChange={setCourse} />
+            <CourseCurriculumBuilder
+              course={course}
+              onCourseChange={setCourse}
+              onPublish={() => void publishCourse()}
+              onUnpublish={() => void updateStatus("DRAFT")}
+              onArchive={() => void updateStatus("ARCHIVED")}
+            />
           ) : (
             <p className="text-sm text-muted-foreground">
               Save course details first to build the curriculum.
@@ -880,116 +774,11 @@ export function CourseBuilder({ initialCourse, instructors, mode }: CourseBuilde
           )}
         </TabsContent>
 
-        <TabsContent value="settings" className="mt-0 space-y-6">
-          <div className="space-y-4 rounded-[20px] border bg-card p-6 shadow-sm">
-            <h2 className="font-semibold">Course settings</h2>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label>Level</Label>
-                <Select
-                  value={level}
-                  onValueChange={(v) => {
-                    markDirty()
-                    setLevel(v as CourseLevel)
-                  }}
-                >
-                  <SelectTrigger className="rounded-xl">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    {LEVELS.map((l) => (
-                      <SelectItem key={l} value={l}>
-                        {l.charAt(0) + l.slice(1).toLowerCase()}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>Instructor</Label>
-                <Select
-                  value={instructorId}
-                  onValueChange={(v) => {
-                    markDirty()
-                    setInstructorId(v)
-                  }}
-                >
-                  <SelectTrigger className="rounded-xl">
-                    <SelectValue placeholder="Select instructor" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    {instructors.map((i) => (
-                      <SelectItem key={i.id} value={i.id}>
-                        {i.displayName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Instructor bio and photo are updated by the instructor in their panel settings.
-            </p>
-            <div className="flex items-center gap-3 rounded-xl border px-4 py-3">
-              <Switch
-                checked={isFeatured}
-                onCheckedChange={(checked) => {
-                  markDirty()
-                  setIsFeatured(checked)
-                }}
-              />
-              <div>
-                <Label>Featured course</Label>
-                <p className="text-xs text-muted-foreground">Show on homepage highlights</p>
-              </div>
-            </div>
-          </div>
-
-          {course && (
-            <div className="space-y-3 rounded-[20px] border bg-card p-6 shadow-sm">
-              <h2 className="font-semibold">Related admin</h2>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link
-                    href="/admin/payments/installments"
-                    className="text-primary underline-offset-2 hover:underline"
-                  >
-                    Installment plans
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/admin/sessions"
-                    className="text-primary underline-offset-2 hover:underline"
-                  >
-                    Live sessions
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/admin/certificates"
-                    className="text-primary underline-offset-2 hover:underline"
-                  >
-                    Certificates
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/admin/users"
-                    className="text-primary underline-offset-2 hover:underline"
-                  >
-                    Users (manual enrollment)
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          )}
-        </TabsContent>
       </Tabs>
 
       {mode === "create" && !course && (
         <p className="text-sm text-muted-foreground">
-          Fill in course details and click Save to unlock the Curriculum tab.
+          Fill in course details and click Save draft to unlock the Curriculum tab.
         </p>
       )}
 

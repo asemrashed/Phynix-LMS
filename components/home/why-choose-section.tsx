@@ -23,7 +23,7 @@ export function WhyChooseSection({ section }: WhyChooseSectionProps) {
           description={content.description ?? undefined}
         />
 
-        <div className="grid grid-cols-2 gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {content.items.map((feature, index) => {
             const Icon = getHomepageIcon(feature.icon)
             return (

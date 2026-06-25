@@ -14,6 +14,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useAuth, ApiError } from "@/lib/auth-context"
 import { resolveLoginRedirect } from "@/lib/resolve-login-redirect"
 import { cn } from "@/lib/utils"
+import { BRAND_MONOGRAM, BRAND_NAME } from "@/lib/brand"
 import { toast } from "sonner"
 
 const schema = z.object({
@@ -90,9 +91,9 @@ function LoginContent() {
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
-              <span className="text-lg font-bold text-primary-foreground">IL</span>
+              <span className="text-lg font-bold text-primary-foreground">{BRAND_MONOGRAM}</span>
             </div>
-            <span className="text-xl font-bold text-foreground">IELTS LMS</span>
+            <span className="text-xl font-bold text-foreground">{BRAND_NAME}</span>
           </Link>
           <h1 className="mt-6 text-2xl font-bold text-foreground">Welcome back</h1>
           <p className="mt-1 text-sm text-muted-foreground">

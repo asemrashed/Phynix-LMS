@@ -6,7 +6,7 @@ import { mergeSitePage } from "@/lib/site-content-defaults"
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = mergeSitePage("cookies", await fetchServerApi<PublicSitePage>("/site/pages/cookies"))
-  return { title: page?.seoTitle ?? "Cookie Policy — IELTS LMS" }
+  return { title: page?.seoTitle ?? "Cookie Policy — PhynixEducation" }
 }
 
 export default async function CookiesPage() {

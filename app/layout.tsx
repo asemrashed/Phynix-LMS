@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default: defaultOg.title,
-    template: '%s | IELTS LMS',
+    template: '%s | PhynixEducation',
   },
   description: defaultOg.description,
   openGraph: {

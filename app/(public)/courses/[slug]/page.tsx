@@ -92,26 +92,15 @@ export default function CourseDetailPage() {
     fetchCourse()
   }, [slug, previewMode])
 
-  const showInstructorSection = useMemo(() => {
-    if (!course) return false
-    return !!(
-      course.instructorBio ||
-      course.instructorPhotoUrl ||
-      course.instructorTitle ||
-      course.instructorStats
-    )
-  }, [course])
-
   const tabs = useMemo(() => {
     if (!course) return []
     return [
       { id: "overview", label: "Overview" },
       { id: "curriculum", label: "Curriculum" },
-      ...(showInstructorSection ? [{ id: "instructor", label: "Instructor" }] : []),
       { id: "reviews", label: "Reviews" },
       ...(course.faqs.length > 0 ? [{ id: "faqs", label: "FAQs" }] : []),
     ]
-  }, [course, showInstructorSection])
+  }, [course])
 
   useEffect(() => {
     if (!course) return
@@ -233,7 +222,7 @@ export default function CourseDetailPage() {
       router.push(`/dashboard/courses/${course.slug}?lesson=${lesson.id}`)
       return
     }
-    if (lesson.isFree && lesson.type === "VIDEO") {
+    if (lesson.previewAvailable) {
       setPreviewLesson(lesson)
     }
   }
@@ -256,7 +245,7 @@ export default function CourseDetailPage() {
     () =>
       course?.sections
         .flatMap((section) => section.lessons)
-        .filter((lesson) => lesson.isFree).length ?? 0,
+        .filter((lesson) => lesson.previewAvailable).length ?? 0,
     [course]
   )
 
@@ -550,7 +539,7 @@ export default function CourseDetailPage() {
                       <div className="border-t border-neutral-100 bg-neutral-50/20 px-4 pb-3">
                         {section.lessons.map((lesson) => {
                           const canPreview =
-                            !course.isEnrolled && lesson.isFree && lesson.type === "VIDEO"
+                            !course.isEnrolled && lesson.previewAvailable
                           const isActivePreview = previewLesson?.id === lesson.id
                           const isLocked = !course.isEnrolled && !lesson.isFree
 
@@ -574,7 +563,7 @@ export default function CourseDetailPage() {
                                   completed={lesson.isCompleted}
                                 />
                                 <span className="text-neutral-700">{lesson.title}</span>
-                                {lesson.isFree && !course.isEnrolled && (
+                                {lesson.previewAvailable && !course.isEnrolled && (
                                   <Badge
                                     variant="outline"
                                     className="border-primary/30 bg-primary/10 px-1.5 py-0 text-[10px] font-bold text-primary"
@@ -611,82 +600,6 @@ export default function CourseDetailPage() {
               </div>
             )}
           </div>
-
-          {showInstructorSection && (
-            <div
-              id="instructor"
-              className="scroll-mt-32 rounded-2xl border border-neutral-100 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] md:p-8"
-            >
-              <h2 className="mb-5 border-b border-neutral-100 pb-3 text-lg font-bold text-slate-900">
-                Instructor
-              </h2>
-
-              <div className="flex flex-col items-start gap-5 sm:flex-row">
-                {course.instructorPhotoUrl && (
-                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border border-neutral-100 bg-neutral-50 shadow-sm">
-                    <AppImage
-                      src={
-                        getMediaUrl(course.instructorPhotoUrl) ||
-                        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop"
-                      }
-                      alt={course.instructorName}
-                      fill
-                      sizes="80px"
-                      className="object-cover"
-                    />
-                  </div>
-                )}
-                <div className="flex-1 space-y-3">
-                  <div>
-                    <h3 className="text-lg font-bold text-slate-800">{course.instructorName}</h3>
-                    {course.instructorTitle && (
-                      <p className="text-xs font-bold text-neutral-400">{course.instructorTitle}</p>
-                    )}
-                  </div>
-
-                  {course.instructorStats && (
-                    <div className="flex max-w-sm gap-4 rounded-lg border border-neutral-100 bg-neutral-50 p-2.5 text-xs font-bold text-neutral-500">
-                      {course.instructorStats.averageRating > 0 && (
-                        <div>
-                          <span className="text-slate-800">
-                            {course.instructorStats.averageRating.toFixed(1)}{" "}
-                          </span>
-                          Rating
-                        </div>
-                      )}
-                      {course.instructorStats.totalStudents > 0 && (
-                        <div
-                          className={cn(
-                            course.instructorStats.averageRating > 0 &&
-                              "border-l border-neutral-200 pl-4"
-                          )}
-                        >
-                          <span className="text-slate-800">
-                            {course.instructorStats.totalStudents.toLocaleString()}{" "}
-                          </span>
-                          Students
-                        </div>
-                      )}
-                      {course.instructorStats.courseCount > 0 && (
-                        <div className="border-l border-neutral-200 pl-4">
-                          <span className="text-slate-800">
-                            {course.instructorStats.courseCount}{" "}
-                          </span>
-                          Courses
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {course.instructorBio && (
-                    <p className="text-sm font-medium leading-relaxed text-neutral-600">
-                      {course.instructorBio}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
 
           <div
             id="reviews"

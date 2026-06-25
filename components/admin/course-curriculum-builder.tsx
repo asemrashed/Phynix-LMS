@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import {
   Select,
@@ -28,12 +27,8 @@ import {
 } from "@/components/ui/alert-dialog"
 import { cn } from "@/lib/utils"
 import { uploadCourseVideo } from "@/lib/upload"
-import {
-  parseYoutubeId,
-  VIDEO_PROVIDER_LABELS,
-  youtubeThumb,
-} from "@/lib/video-source"
 import { AdminLessonVideoPreview } from "@/components/admin/admin-lesson-video-preview"
+import { RichTextEditor } from "@/components/admin/rich-text-editor"
 import { TextLessonPreview } from "@/components/admin/text-lesson-preview"
 import { QuizLessonEditor } from "@/components/admin/quiz/quiz-lesson-editor"
 import { getCurriculumIssues } from "@/lib/curriculum-validation"
@@ -64,8 +59,6 @@ import {
   Trash2,
   Upload,
 } from "lucide-react"
-
-const VIDEO_PROVIDERS: VideoProvider[] = ["YOUTUBE", "SELF_HOSTED"]
 
 const LESSON_TYPES: LessonType[] = ["VIDEO", "TEXT", "QUIZ"]
 
@@ -141,11 +134,17 @@ function useDebouncedCallback<T extends (...args: Parameters<T>) => void>(
 interface CourseCurriculumBuilderProps {
   course: AdminCourseDetail
   onCourseChange: React.Dispatch<React.SetStateAction<AdminCourseDetail | null>>
+  onPublish?: () => void
+  onUnpublish?: () => void
+  onArchive?: () => void
 }
 
 export function CourseCurriculumBuilder({
   course,
   onCourseChange,
+  onPublish,
+  onUnpublish,
+  onArchive,
 }: CourseCurriculumBuilderProps) {
   const sections = course.sections
   const [newSectionTitle, setNewSectionTitle] = useState("")
@@ -572,12 +571,29 @@ export function CourseCurriculumBuilder({
             Organize modules, manage lectures, and configure settings.
           </p>
         </div>
-        <Button variant="outline" size="sm" className="rounded-xl bg-white shadow-xs self-start sm:self-auto" asChild>
-          <a href={`/courses/${course.slug}`} target="_blank" rel="noopener noreferrer">
-            <ExternalLink className="mr-1.5 size-4 text-muted-foreground" />
-            Preview as student
-          </a>
-        </Button>
+        <div className="flex flex-wrap gap-2 self-start sm:self-auto">
+          <Button variant="outline" size="sm" className="rounded-xl bg-white shadow-xs" asChild>
+            <a href={`/courses/${course.slug}?preview=1`} target="_blank" rel="noopener noreferrer">
+              <ExternalLink className="mr-1.5 size-4 text-muted-foreground" />
+              Preview as student
+            </a>
+          </Button>
+          {course.status !== "PUBLISHED" && onPublish && (
+            <Button size="sm" className="rounded-xl" onClick={onPublish}>
+              Publish
+            </Button>
+          )}
+          {course.status === "PUBLISHED" && onUnpublish && (
+            <Button variant="outline" size="sm" className="rounded-xl" onClick={onUnpublish}>
+              Unpublish
+            </Button>
+          )}
+          {course.status === "PUBLISHED" && onArchive && (
+            <Button variant="outline" size="sm" className="rounded-xl" onClick={onArchive}>
+              Archive
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Dashboard Metrics Grid */}
@@ -642,7 +658,7 @@ export function CourseCurriculumBuilder({
       <div className="flex gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-xs">
         <Input
           className="rounded-xl border border-slate-200 bg-slate-50/50 focus-visible:bg-white transition-colors h-11"
-          placeholder="Enter new module title (e.g., Module 1: Introduction to IELTS)"
+          placeholder="Enter new module title (e.g., Module 1: Introduction to English)"
           value={newSectionTitle}
           onChange={(e) => setNewSectionTitle(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && void addSection()}
@@ -1009,21 +1025,23 @@ export function CourseCurriculumBuilder({
                       </Select>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="lesson-duration" className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Duration (min)</Label>
-                      <Input
-                        id="lesson-duration"
-                        type="number"
-                        min={0}
-                        className="rounded-xl border-slate-200 h-10 bg-slate-50/50 focus:bg-white transition-all"
-                        value={secondsToMinutes(lessonDraft.duration)}
-                        onChange={(e) =>
-                          updateLessonDraft({
-                            duration: Math.max(0, Number(e.target.value) || 0) * 60,
-                          })
-                        }
-                      />
-                    </div>
+                    {lessonDraft.type === "VIDEO" && (
+                      <div className="space-y-2">
+                        <Label htmlFor="lesson-duration" className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Duration (min)</Label>
+                        <Input
+                          id="lesson-duration"
+                          type="number"
+                          min={0}
+                          className="rounded-xl border-slate-200 h-10 bg-slate-50/50 focus:bg-white transition-all"
+                          value={secondsToMinutes(lessonDraft.duration)}
+                          onChange={(e) =>
+                            updateLessonDraft({
+                              duration: Math.max(0, Number(e.target.value) || 0) * 60,
+                            })
+                          }
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -1054,60 +1072,7 @@ export function CourseCurriculumBuilder({
                   <div className="space-y-4">
                     {/* Video source configuration */}
                     <div className="space-y-4 rounded-2xl border p-4 bg-slate-50/30 border-slate-100">
-                      <div className="space-y-2">
-                        <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Video Source Provider</Label>
-                        <Select
-                          value={lessonDraft.videoProvider ?? "YOUTUBE"}
-                          onValueChange={(v) => {
-                            const provider = v as VideoProvider
-                            updateLessonDraft({
-                              videoProvider: provider,
-                              videoRef: null,
-                            })
-                          }}
-                        >
-                          <SelectTrigger className="rounded-xl border-slate-200 h-10 bg-white">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent className="bg-white">
-                            {VIDEO_PROVIDERS.map((provider) => (
-                              <SelectItem key={provider} value={provider}>
-                                {VIDEO_PROVIDER_LABELS[provider]}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      {(lessonDraft.videoProvider ?? "YOUTUBE") === "YOUTUBE" && (
-                        <div className="space-y-2">
-                          <Label htmlFor="youtube-ref" className="text-xs font-semibold text-slate-500 uppercase tracking-wider">YouTube URL or ID</Label>
-                          <Input
-                            id="youtube-ref"
-                            className="rounded-xl border-slate-200 h-10 bg-white"
-                            placeholder="e.g., https://youtube.com/watch?v=..."
-                            value={lessonDraft.videoRef ?? ""}
-                            onChange={(e) => {
-                              const parsed = parseYoutubeId(e.target.value)
-                              updateLessonDraft({
-                                videoProvider: "YOUTUBE",
-                                videoRef: parsed,
-                              })
-                            }}
-                          />
-                          {lessonDraft.videoRef && (
-                            <div className="mt-2 overflow-hidden rounded-xl border border-slate-100 aspect-video shadow-xs bg-slate-100">
-                              <img
-                                src={youtubeThumb(lessonDraft.videoRef)}
-                                alt="YouTube preview"
-                                className="h-full w-full object-cover animate-fade-in"
-                              />
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {lessonDraft.videoProvider === "SELF_HOSTED" && selected && (
+                      {selected && (
                         <div className="space-y-3">
                           <div className="space-y-2">
                             <Label htmlFor="course-video-file" className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Upload Video File</Label>
@@ -1148,7 +1113,7 @@ export function CourseCurriculumBuilder({
                           {lessonDraft.videoRef && (
                             <div className="flex items-center gap-2 rounded-xl border bg-emerald-50/30 border-emerald-100 px-3 py-2 text-xs font-medium text-emerald-800">
                               <Upload className="size-4 shrink-0 text-emerald-600" />
-                              <span className="truncate">{lessonDraft.videoRef}</span>
+                              <span>Video uploaded</span>
                             </div>
                           )}
                         </div>
@@ -1195,14 +1160,11 @@ export function CourseCurriculumBuilder({
                         <TextLessonPreview content={lessonDraft.content ?? ""} />
                       </div>
                     ) : (
-                      <Textarea
-                        id="lesson-content"
-                        className="min-h-[160px] rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all text-sm leading-relaxed"
-                        placeholder={LESSON_TYPE_META[lessonDraft.type].contentPlaceholder}
+                      <RichTextEditor
                         value={lessonDraft.content ?? ""}
-                        onChange={(e) =>
-                          updateLessonDraft({ content: e.target.value || null })
-                        }
+                        onChange={(html) => updateLessonDraft({ content: html || null })}
+                        placeholder={LESSON_TYPE_META[lessonDraft.type].contentPlaceholder}
+                        className="rounded-xl border border-slate-200"
                       />
                     )}
                   </div>

@@ -1,7 +1,5 @@
-"use client"
-
-import { SessionEditor } from "@/components/admin/session-editor"
+import { redirect } from "next/navigation"
 
 export default function NewSessionPage() {
-  return <SessionEditor mode="create" />
+  redirect("/admin")
 }

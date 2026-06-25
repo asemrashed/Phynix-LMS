@@ -34,8 +34,3 @@ export function getLessonVideoRef(lesson: {
   if (lesson.videoRef?.trim()) return { provider, ref: lesson.videoRef.trim() }
   return { provider, ref: null }
 }
-
-export function extractYoutubeIdFromEmbedUrl(embedUrl: string): string | null {
-  const match = embedUrl.match(/\/embed\/([a-zA-Z0-9_-]{11})/)
-  return match?.[1] ?? null
-}

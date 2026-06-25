@@ -17,9 +17,11 @@ import { NavbarSearch } from "@/components/search/navbar-search"
 import { useAuth } from "@/lib/auth-context"
 import { getMediaUrl } from "@/lib/media-url"
 import { cn } from "@/lib/utils"
+import { BRAND_MONOGRAM, BRAND_NAME } from "@/lib/brand"
 
 interface TopbarProps {
   homeHref?: string
+  brandHref?: string
   onMenuClick?: () => void
   onNotificationsClick?: () => void
   unreadCount?: number
@@ -36,6 +38,7 @@ function planLabel(plan: string) {
 
 export function DashboardTopbar({
   homeHref = "/dashboard",
+  brandHref = "/",
   onMenuClick,
   onNotificationsClick,
   unreadCount = 0,
@@ -73,11 +76,18 @@ export function DashboardTopbar({
         <Menu className="h-5 w-5" />
       </Button>
 
-      <Link href={homeHref} className="hidden shrink-0 items-center gap-2 md:flex">
+      <Link href={brandHref} className="flex shrink-0 items-center gap-2 md:hidden">
         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary">
-          <span className="text-sm font-bold text-primary-foreground">IL</span>
+          <span className="text-sm font-bold text-primary-foreground">{BRAND_MONOGRAM}</span>
         </div>
-        <span className="text-base font-bold text-foreground">IELTS LMS</span>
+        <span className="text-base font-bold text-foreground">{BRAND_NAME}</span>
+      </Link>
+
+      <Link href={brandHref} className="hidden shrink-0 items-center gap-2 md:flex">
+        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary">
+          <span className="text-sm font-bold text-primary-foreground">{BRAND_MONOGRAM}</span>
+        </div>
+        <span className="text-base font-bold text-foreground">{BRAND_NAME}</span>
       </Link>
 
       <NavbarSearch className="mx-auto hidden max-w-md flex-1 md:block" />

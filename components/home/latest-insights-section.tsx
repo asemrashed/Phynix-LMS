@@ -24,7 +24,7 @@ export function LatestInsightsSection({
   const content = mergeHomepageSection("latest_insights", section)
   const emptyMessage =
     (content.metadata?.emptyMessage as string | undefined) ??
-    "New IELTS tips coming soon. Check back for speaking topics, writing strategies, and study guides."
+    "New English tips coming soon. Check back for speaking topics, writing strategies, and study guides."
   const cta = content.ctaPrimary ?? { label: "View All Insights", href: "/blog" }
   const usesExternal = externalPosts !== undefined
   const [posts, setPosts] = useState<BlogPostListItem[]>(externalPosts ?? [])

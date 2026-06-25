@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
 export function ContactInfoCards({ className }: { className?: string }) {
   const { settings } = useSiteSettings()
   const whatsappUrl = getWhatsAppUrl(
-    "Hello IELTS LMS, I need help with...",
+    "Hello PhynixEducation, I need help with...",
     settings.whatsappNumber
   )
 

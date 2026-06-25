@@ -49,11 +49,11 @@ export function HeroSection({ stats: externalStats, statsLoading, section }: Her
             </p>
 
             <h1 className="mb-6 text-balance text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
-              {content.title === "Master IELTS with Expert-Led Preparation" ? (
+              {content.title === "Master English with Expert-Led Preparation" ? (
                 <>
                   Master{" "}
                   <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                    IELTS
+                    English
                   </span>{" "}
                   with{" "}
                   <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
@@ -100,7 +100,7 @@ export function HeroSection({ stats: externalStats, statsLoading, section }: Her
                 <div className="h-full w-full overflow-hidden rounded-[28px] bg-card">
                   <Image
                     src={process.env.NEXT_PUBLIC_HERO_IMAGE_URL || "/Heor-Image.jpeg"}
-                    alt="IELTS preparation and education"
+                    alt="English preparation and education"
                     fill
                     className="object-cover"
                     priority

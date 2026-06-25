@@ -81,7 +81,7 @@ export function FeaturedCourses({
             </div>
           )}
           <h2 className="text-3xl font-bold text-foreground md:text-4xl">
-            {content.title ?? "Start Your IELTS Journey"}
+            {content.title ?? "Start Your English Journey"}
           </h2>
           {content.description && (
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{content.description}</p>

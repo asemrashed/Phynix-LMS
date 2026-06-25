@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { AppImage } from "@/components/ui/app-image"
 import Link from "next/link"
 import type { CourseDetail, CourseListItem } from "@fxprime/types"
 import { api } from "@/lib/api"
@@ -30,7 +29,6 @@ export function CourseDetailExtras({ course }: CourseDetailExtrasProps) {
   }, [course.slug])
 
   const outcomes = resolveCourseOutcomes(course.language, course.learningOutcomes)
-  const instructorPhoto = getMediaUrl(course.instructorPhotoUrl)
 
   return (
     <div className="mt-10 space-y-10">
@@ -59,33 +57,6 @@ export function CourseDetailExtras({ course }: CourseDetailExtrasProps) {
           </div>
         </div>
       </section>
-
-      {(course.instructorBio || instructorPhoto) && (
-        <section>
-          <h2 className="text-xl font-bold text-foreground">Instructor</h2>
-          <div className="mt-4 flex gap-4 rounded-[20px] bg-card p-5">
-            {instructorPhoto && (
-              <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full">
-                <AppImage
-                  src={instructorPhoto}
-                  alt={course.instructorName}
-                  fill
-                  sizes="64px"
-                  className="object-cover"
-                />
-              </div>
-            )}
-            <div>
-              <p className="font-semibold text-foreground">{course.instructorName}</p>
-              {course.instructorBio && (
-                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                  {course.instructorBio}
-                </p>
-              )}
-            </div>
-          </div>
-        </section>
-      )}
 
       {related.length > 0 && (
         <section>

@@ -7,10 +7,10 @@ import { mergeSitePage } from "@/lib/site-content-defaults"
 export async function generateMetadata(): Promise<Metadata> {
   const page = mergeSitePage("about", await fetchServerApi<PublicSitePage>("/site/pages/about"))
   return {
-    title: page?.seoTitle ?? "About Us — IELTS LMS",
+    title: page?.seoTitle ?? "About Us — PhynixEducation",
     description:
       page?.seoDescription ??
-      "Learn about IELTS LMS — professional IELTS preparation platform.",
+      "Learn about PhynixEducation — professional English preparation platform.",
   }
 }
 

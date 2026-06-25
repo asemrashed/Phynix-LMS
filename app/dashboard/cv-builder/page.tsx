@@ -28,7 +28,7 @@ function CvPreview({
   return (
     <div className="rounded-[20px] border bg-white p-8 text-slate-800 shadow-sm">
       <p className="text-xs font-semibold uppercase tracking-wider text-sidebar-accent-foreground">
-        IELTS LMS
+        PhynixEducation
       </p>
       <h2 className="mt-2 text-2xl font-bold">
         {portfolio.profile.firstName} {portfolio.profile.lastName}
@@ -193,7 +193,7 @@ export default function CVBuilderPage() {
             <h1 className="text-2xl font-bold text-foreground md:text-3xl">CV Builder</h1>
           </div>
           <p className="text-muted-foreground">
-            Build a professional CV — auto-includes your courses and certificates from IELTS LMS.
+            Build a professional CV — auto-includes your courses and certificates from PhynixEducation.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -215,7 +215,7 @@ export default function CVBuilderPage() {
             <Input
               id="headline"
               className="rounded-xl"
-              placeholder="IELTS & Academic English Professional"
+              placeholder="English & Academic English Professional"
               value={draft.headline || ""}
               onChange={(e) => updateDraft({ headline: e.target.value })}
             />
@@ -261,7 +261,7 @@ export default function CVBuilderPage() {
               className="rounded-xl"
               value={skillsText}
               onChange={(e) => setSkillsText(e.target.value)}
-              placeholder="IELTS Preparation, Academic Writing, Public Speaking"
+              placeholder="English Preparation, Academic Writing, Public Speaking"
             />
           </div>
 

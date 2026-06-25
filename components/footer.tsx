@@ -12,6 +12,7 @@ import type { LucideIcon } from "lucide-react"
 import type { FooterSocialPlatform, PublicSiteSettings } from "@fxprime/types"
 import { fetchServerApi } from "@/lib/api-url"
 import { mergeSiteSettings } from "@/lib/site-content-defaults"
+import { BRAND_MONOGRAM } from "@/lib/brand"
 
 const SOCIAL_ICONS: Record<FooterSocialPlatform, LucideIcon> = {
   facebook: Facebook,
@@ -43,7 +44,7 @@ export async function Footer() {
           <div className="flex flex-col items-start space-y-4">
             <Link href="/" className="flex items-center gap-2">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
-                <span className="text-xl font-bold text-primary-foreground">IL</span>
+                <span className="text-xl font-bold text-primary-foreground">{BRAND_MONOGRAM}</span>
               </div>
               <span className="text-xl font-bold text-foreground">{footer.brandName}</span>
             </Link>

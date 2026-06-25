@@ -114,7 +114,7 @@ export function SubscriptionCard({
         <div className="flex flex-wrap gap-2">
           {(subscription.canRenew || subscription.plan === "FREE") && (
             <Button variant="outline" asChild className="rounded-xl">
-              <Link href="/pricing">
+              <Link href="/courses">
                 {subscription.canRenew ? "Renew Plan" : "Upgrade Plan"}
               </Link>
             </Button>

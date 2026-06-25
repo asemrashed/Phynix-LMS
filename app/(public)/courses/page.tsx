@@ -1,7 +1,6 @@
 "use client"
 
-import { Suspense, useEffect, useState } from "react"
-import { useSearchParams } from "next/navigation"
+import { useEffect, useState } from "react"
 import { CourseCard } from "@/components/course-card"
 import { Input } from "@/components/ui/input"
 import {
@@ -17,12 +16,8 @@ import type { CourseListItem } from "@fxprime/types"
 import { api } from "@/lib/api"
 import { cn } from "@/lib/utils"
 import { getMediaUrl } from "@/lib/media-url"
-import { Badge } from "@/components/ui/badge"
 
-function CoursesContent() {
-  const searchParams = useSearchParams()
-  const freeOnly = searchParams.get("free") === "true"
-
+export default function CoursesPage() {
   const [courses, setCourses] = useState<CourseListItem[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
@@ -36,7 +31,6 @@ function CoursesContent() {
         const params = new URLSearchParams()
         if (level !== "all") params.set("level", level)
         if (sort !== "newest") params.set("sort", sort)
-        if (freeOnly) params.set("free", "true")
         const query = params.toString() ? `?${params.toString()}` : ""
         const data = await api<{ courses: CourseListItem[]; total: number }>(
           `/courses${query}`
@@ -49,7 +43,7 @@ function CoursesContent() {
       }
     }
     fetchCourses()
-  }, [level, sort, freeOnly])
+  }, [level, sort])
 
   const filtered = courses.filter(
     (c) =>
@@ -60,16 +54,9 @@ function CoursesContent() {
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-3xl font-bold text-foreground md:text-4xl">
-            {freeOnly ? "Free IELTS Courses" : "IELTS Courses"}
-          </h1>
-          {freeOnly && <Badge className="rounded-full">Free</Badge>}
-        </div>
+        <h1 className="text-3xl font-bold text-foreground md:text-4xl">All Courses</h1>
         <p className="mt-2 text-muted-foreground">
-          {freeOnly
-            ? "Start learning IELTS at no cost — upgrade anytime for full access"
-            : "Structured IELTS preparation in English"}
+          Structured English preparation courses for every level
         </p>
       </div>
 
@@ -111,8 +98,8 @@ function CoursesContent() {
       </div>
 
       {loading ? (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3].map((i) => (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
             <div key={i} className={cn("h-80 animate-pulse rounded-[20px] bg-muted")} />
           ))}
         </div>
@@ -122,7 +109,7 @@ function CoursesContent() {
           <p className="text-muted-foreground">No courses found</p>
         </div>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {filtered.map((course, index) => (
             <motion.div
               key={course.id}
@@ -153,19 +140,5 @@ function CoursesContent() {
         </div>
       )}
     </main>
-  )
-}
-
-export default function CoursesPage() {
-  return (
-    <Suspense
-      fallback={
-        <main className="container mx-auto px-4 py-8">
-          <div className="h-64 animate-pulse rounded-[20px] bg-muted" />
-        </main>
-      }
-    >
-      <CoursesContent />
-    </Suspense>
   )
 }

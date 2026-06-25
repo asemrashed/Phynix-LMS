@@ -63,7 +63,7 @@ export default function CertificatePrintPage() {
       <div className="certificate-sheet mx-auto max-w-3xl rounded-[24px] border-4 border-primary/20 bg-card p-10 shadow-xl print:rounded-none print:border-2 print:shadow-none">
         <div className="mb-8 flex items-center justify-center gap-3 text-primary">
           <Award className="h-10 w-10" />
-          <span className="text-2xl font-bold tracking-wide">IELTS LMS</span>
+          <span className="text-2xl font-bold tracking-wide">PhynixEducation</span>
         </div>
 
         <p className="text-center text-sm font-medium uppercase tracking-[0.3em] text-muted-foreground">
@@ -98,7 +98,7 @@ export default function CertificatePrintPage() {
         </div>
 
         <p className="mt-10 text-center text-xs text-muted-foreground">
-          Verify at ieltslms.com/verify/{result.certCode}
+          Verify at englishlms.com/verify/{result.certCode}
         </p>
       </div>
     </div>
