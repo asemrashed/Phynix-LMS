@@ -4,18 +4,6 @@ import dynamic from "next/dynamic"
 import type { VideoTokenResponse } from "@fxprime/types"
 import { Spinner } from "@/components/ui/spinner"
 
-const VideoPlayer = dynamic(
-  () => import("@/components/video-player").then((m) => m.VideoPlayer),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="flex aspect-video items-center justify-center rounded-[20px] bg-muted">
-        <Spinner className="h-8 w-8" />
-      </div>
-    ),
-  }
-)
-
 const YoutubePlayer = dynamic(
   () => import("@/components/youtube-player").then((m) => m.YoutubePlayer),
   {
@@ -68,10 +56,6 @@ export function CourseVideoPlayer({
 
   if (playback.provider === "SELF_HOSTED" && playback.streamUrl) {
     return <Html5VideoPlayer streamUrl={playback.streamUrl} {...common} />
-  }
-
-  if (playback.embedUrl) {
-    return <VideoPlayer embedUrl={playback.embedUrl} {...common} />
   }
 
   return (

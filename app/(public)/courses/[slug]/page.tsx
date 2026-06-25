@@ -20,8 +20,9 @@ import {
   FileText,
   HelpCircle,
 } from "lucide-react"
-import type { CourseDetail, LessonItem } from "@fxprime/types"
+import type { CourseDetail, LessonItem, PaymentSessionResponse } from "@fxprime/types"
 import { api, ApiError } from "@/lib/api"
+import { processPayment, paymentRedirectsAway } from "@/lib/payment"
 import { handleVerificationError } from "@/lib/verification"
 import { useAuth } from "@/lib/auth-context"
 import { getSettingsPath } from "@/lib/get-default-panel"
@@ -160,8 +161,48 @@ export default function CourseDetailPage() {
     }
     if (!course) return
 
+    if (user.role !== "STUDENT") {
+      toast.error("Only students can enroll in courses")
+      return
+    }
+
     if (course.price > 0 && !course.isEnrolled) {
-      router.push(`/checkout?courseId=${course.id}`)
+      setEnrolling(true)
+      try {
+        const session = await api<PaymentSessionResponse>("/payments/create-session", {
+          method: "POST",
+          body: JSON.stringify({ courseId: course.id }),
+        })
+        const redirectsAway = paymentRedirectsAway({
+          checkoutUrl: session.checkoutUrl,
+          gateway: session.gateway,
+          manual: session.manual,
+        })
+        await processPayment({
+          sessionId: session.sessionId,
+          paymentId: session.paymentId,
+          checkoutUrl: session.checkoutUrl,
+          gateway: session.gateway,
+          manual: session.manual,
+        })
+        if (redirectsAway) return
+        await refreshUser()
+        toast.success("Payment successful! You are now enrolled.")
+        const updated = await api<CourseDetail>(`/courses/${slug}`)
+        setCourse(updated)
+      } catch (err) {
+        if (
+          handleVerificationError(err, () => {
+            toast.error("Verify your email before enrolling")
+            router.push(getSettingsPath(user?.role))
+          })
+        ) {
+          return
+        }
+        toast.error(err instanceof ApiError ? err.message : "Could not start checkout")
+      } finally {
+        setEnrolling(false)
+      }
       return
     }
 
@@ -181,11 +222,7 @@ export default function CourseDetailPage() {
       ) {
         return
       }
-      if (err instanceof ApiError && err.code === "PAYMENT_REQUIRED") {
-        router.push(`/checkout?courseId=${course.id}`)
-      } else {
-        toast.error(err instanceof ApiError ? err.message : "Enrollment failed")
-      }
+      toast.error(err instanceof ApiError ? err.message : "Enrollment failed")
     } finally {
       setEnrolling(false)
     }

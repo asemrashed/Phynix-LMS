@@ -13,9 +13,6 @@ const CourseVideoPlayer = dynamic(
 )
 
 function buildEmbedUrl(provider: VideoProvider, ref: string): string | null {
-  if (provider === "VIMEO") {
-    return `https://player.vimeo.com/video/${ref}?badge=0&autopause=0&title=0&byline=0&portrait=0`
-  }
   if (provider === "YOUTUBE") {
     return `https://www.youtube.com/embed/${ref}`
   }

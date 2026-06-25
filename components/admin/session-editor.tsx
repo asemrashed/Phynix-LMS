@@ -814,7 +814,7 @@ export function SessionEditor({ mode, initialSession }: SessionEditorProps) {
                 <Input
                   id="recordingUrl"
                   className="rounded-xl"
-                  placeholder="https://vimeo.com/... or session recording"
+                  placeholder="https://... session recording link"
                   value={recordingUrl}
                   onChange={(e) => setRecordingUrl(e.target.value)}
                   disabled={isCancelled}

@@ -29,7 +29,6 @@ import {
 import { cn } from "@/lib/utils"
 import { uploadCourseVideo } from "@/lib/upload"
 import {
-  parseVimeoId,
   parseYoutubeId,
   VIDEO_PROVIDER_LABELS,
   youtubeThumb,
@@ -66,7 +65,7 @@ import {
   Upload,
 } from "lucide-react"
 
-const VIDEO_PROVIDERS: VideoProvider[] = ["VIMEO", "YOUTUBE", "SELF_HOSTED"]
+const VIDEO_PROVIDERS: VideoProvider[] = ["YOUTUBE", "SELF_HOSTED"]
 
 const LESSON_TYPES: LessonType[] = ["VIDEO", "TEXT", "QUIZ"]
 
@@ -1058,13 +1057,12 @@ export function CourseCurriculumBuilder({
                       <div className="space-y-2">
                         <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Video Source Provider</Label>
                         <Select
-                          value={lessonDraft.videoProvider ?? "VIMEO"}
+                          value={lessonDraft.videoProvider ?? "YOUTUBE"}
                           onValueChange={(v) => {
                             const provider = v as VideoProvider
                             updateLessonDraft({
                               videoProvider: provider,
                               videoRef: null,
-                              vimeoId: null,
                             })
                           }}
                         >
@@ -1081,39 +1079,7 @@ export function CourseCurriculumBuilder({
                         </Select>
                       </div>
 
-                      {(lessonDraft.videoProvider ?? "VIMEO") === "VIMEO" && (
-                        <div className="space-y-2">
-                          <Label htmlFor="vimeo-ref" className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Vimeo Video URL or ID</Label>
-                          <Input
-                            id="vimeo-ref"
-                            className="rounded-xl border-slate-200 h-10 bg-white"
-                            placeholder="e.g., 76979871"
-                            value={lessonDraft.videoRef ?? lessonDraft.vimeoId ?? ""}
-                            onChange={(e) => {
-                              const parsed = parseVimeoId(e.target.value)
-                              updateLessonDraft({
-                                videoProvider: "VIMEO",
-                                videoRef: parsed,
-                                vimeoId: parsed,
-                              })
-                            }}
-                          />
-                          {(lessonDraft.videoRef ?? lessonDraft.vimeoId) && (
-                            <Button variant="outline" size="sm" className="rounded-xl mt-1.5 w-full bg-white shadow-xs border-slate-200" asChild>
-                              <a
-                                href={`https://vimeo.com/${lessonDraft.videoRef ?? lessonDraft.vimeoId}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                <ExternalLink className="mr-1.5 size-3.5 text-muted-foreground" />
-                                Verify on Vimeo
-                              </a>
-                            </Button>
-                          )}
-                        </div>
-                      )}
-
-                      {lessonDraft.videoProvider === "YOUTUBE" && (
+                      {(lessonDraft.videoProvider ?? "YOUTUBE") === "YOUTUBE" && (
                         <div className="space-y-2">
                           <Label htmlFor="youtube-ref" className="text-xs font-semibold text-slate-500 uppercase tracking-wider">YouTube URL or ID</Label>
                           <Input
@@ -1126,7 +1092,6 @@ export function CourseCurriculumBuilder({
                               updateLessonDraft({
                                 videoProvider: "YOUTUBE",
                                 videoRef: parsed,
-                                vimeoId: null,
                               })
                             }}
                           />
@@ -1166,7 +1131,6 @@ export function CourseCurriculumBuilder({
                                     updateLessonDraft({
                                       videoProvider: result.videoProvider,
                                       videoRef: result.videoRef,
-                                      vimeoId: null,
                                     })
                                     toast.success("Video uploaded")
                                   })

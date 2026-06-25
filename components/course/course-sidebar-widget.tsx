@@ -216,7 +216,7 @@ export function CourseSidebarWidget({
         {course.isEnrolled ? (
           <Link href={`/dashboard/courses/${course.slug}`} className="block w-full">
             <Button className="h-11 w-full rounded-xl bg-primary font-bold text-white shadow-md transition-all hover:bg-primary/90">
-              Start Learning
+              View Course
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>

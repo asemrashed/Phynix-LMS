@@ -1,7 +1,6 @@
 import type { VideoProvider } from "@fxprime/types"
 
 export const VIDEO_PROVIDER_LABELS: Record<VideoProvider, string> = {
-  VIMEO: "Vimeo",
   YOUTUBE: "YouTube",
   SELF_HOSTED: "Upload (VPS / local)",
 }
@@ -23,14 +22,6 @@ export function parseYoutubeId(input: string): string | null {
   return null
 }
 
-export function parseVimeoId(input: string): string | null {
-  const trimmed = input.trim()
-  if (/^\d+$/.test(trimmed)) return trimmed
-
-  const match = trimmed.match(/vimeo\.com\/(?:video\/)?(\d+)/)
-  return match?.[1] ?? null
-}
-
 export function youtubeThumb(videoId: string) {
   return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
 }
@@ -38,11 +29,9 @@ export function youtubeThumb(videoId: string) {
 export function getLessonVideoRef(lesson: {
   videoProvider?: VideoProvider
   videoRef?: string | null
-  vimeoId?: string | null
 }): { provider: VideoProvider; ref: string | null } {
-  const provider = lesson.videoProvider ?? "VIMEO"
+  const provider = lesson.videoProvider ?? "YOUTUBE"
   if (lesson.videoRef?.trim()) return { provider, ref: lesson.videoRef.trim() }
-  if (lesson.vimeoId?.trim()) return { provider: "VIMEO", ref: lesson.vimeoId.trim() }
   return { provider, ref: null }
 }
 
