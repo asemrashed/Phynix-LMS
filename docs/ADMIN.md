@@ -1,6 +1,6 @@
 # Admin User Guide
 
-Login: `admin@fxprimeacademy.com` / `password123` (after `bun run db:seed`)
+Login: `admin@phynixeducation.com` / `password123` (after `bun run db:seed`)
 
 Demo student with sample certificate: `student@fxprime.test` / `password123`
 

@@ -34,8 +34,8 @@ const nextConfig = {
     ],
     remotePatterns: [
       { protocol: "http", hostname: "localhost", pathname: "/uploads/**" },
-      { protocol: "https", hostname: "fxprimeacademy.com", pathname: "/uploads/**" },
-      { protocol: "https", hostname: "api.fxprimeacademy.com", pathname: "/uploads/**" },
+      { protocol: "https", hostname: "phynixeducation.com", pathname: "/uploads/**" },
+      { protocol: "https", hostname: "api.phynixeducation.com", pathname: "/uploads/**" },
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
       { protocol: "https", hostname: "img.youtube.com", pathname: "/vi/**" },
       { protocol: "https", hostname: "**.amazonaws.com", pathname: "/**" },

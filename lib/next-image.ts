@@ -1,8 +1,8 @@
 const ALLOWED_HOSTS = new Set([
   "localhost",
   "127.0.0.1",
-  "fxprimeacademy.com",
-  "api.fxprimeacademy.com",
+  "phynixeducation.com",
+  "api.phynixeducation.com",
   "images.unsplash.com",
   "img.youtube.com",
 ])
