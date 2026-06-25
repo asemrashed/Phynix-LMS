@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "analyze": "ANALYZE=true bun run build",
-    "start": "next start",
+    "start": "next start -p 3001",
     "lint": "eslint .",
     "test:e2e": "playwright test --config e2e/playwright.config.ts",
     "test:e2e:ui": "playwright test --config e2e/playwright.config.ts --ui",
