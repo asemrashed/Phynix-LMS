@@ -4,9 +4,6 @@
   "private": true,
   "packageManager": "bun@1.3.9",
   "scripts": {
-    "sync:types": "node scripts/sync-types.mjs",
-    "postinstall": "node scripts/sync-types.mjs",
-    "predev": "node scripts/sync-types.mjs",
     "dev": "next dev",
     "build": "next build",
     "analyze": "ANALYZE=true bun run build",
@@ -17,7 +14,7 @@
     "test:e2e:install": "playwright install chromium"
   },
   "dependencies": {
-    "@fxprime/types": "file:../phy-server/packages/types",
+    "@fxprime/types": "file:./_backend-types/packages/types",
     "@hookform/resolvers": "^3.9.1",
     "@radix-ui/react-accordion": "1.2.12",
     "@radix-ui/react-alert-dialog": "1.1.15",
