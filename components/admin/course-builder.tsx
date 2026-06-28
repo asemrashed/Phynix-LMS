@@ -8,7 +8,7 @@ import { uploadThumbnail } from "@/lib/upload"
 import { getMediaUrl } from "@/lib/media-url"
 import { stripHtml, toRichTextHtml } from "@/lib/strip-html"
 import type { AdminCourseDetail, CourseFaqItem, CourseLevel } from "@fxprime/types"
-import { createCourseSchema, updateCourseSchema } from "@/lib/schemas/admin-course"
+import { createCourseSchema, updateCourseSchema, saveCourseDraftSchema, updateCourseDraftSchema } from "@/lib/schemas/admin-course"
 import { getApiErrorMessage } from "@/lib/api-errors"
 import {
   CourseCurriculumBuilder,
@@ -247,8 +247,13 @@ export function CourseBuilder({ initialCourse, mode }: CourseBuilderProps) {
           body.status = "ARCHIVED"
         }
 
-        if (stripHtml(description).length < 10) {
+        if (intent === "publish" && stripHtml(description).length < 10) {
           toast.error("Description must be at least 10 characters")
+          return null
+        }
+
+        if (!title.trim()) {
+          toast.error("Title is required")
           return null
         }
 
@@ -305,9 +310,13 @@ export function CourseBuilder({ initialCourse, mode }: CourseBuilderProps) {
         }
 
         const parsed =
-          mode === "create" || !course
-            ? createCourseSchema.safeParse(body)
-            : updateCourseSchema.safeParse(body)
+          intent === "draft"
+            ? mode === "create" || !course
+              ? saveCourseDraftSchema.safeParse(body)
+              : updateCourseDraftSchema.safeParse(body)
+            : mode === "create" || !course
+              ? createCourseSchema.safeParse(body)
+              : updateCourseSchema.safeParse(body)
 
         if (!parsed.success) {
           toast.error(parsed.error.errors[0]?.message ?? "Invalid course data")
