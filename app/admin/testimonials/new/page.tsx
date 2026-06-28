@@ -1,7 +1,5 @@
-"use client"
+import { redirect } from "next/navigation"
 
-import { TestimonialEditor } from "@/components/admin/testimonial-editor"
-
-export default function NewTestimonialPage() {
-  return <TestimonialEditor mode="create" />
+export default function NewTestimonialRedirectPage() {
+  redirect("/admin/reviews")
 }

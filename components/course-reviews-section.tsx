@@ -82,7 +82,14 @@ export function CourseReviewsSection({
           reviews.map((item) => (
             <div key={item.id} className={cn("rounded-[20px] bg-card p-4 shadow-sm")}>
               <div className="flex items-center justify-between gap-2">
-                <p className="font-medium">{item.studentName}</p>
+                <div className="flex items-center gap-2">
+                  <p className="font-medium">{item.studentName}</p>
+                  {item.isOwn && item.isPublished === false && (
+                    <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">
+                      Pending approval
+                    </span>
+                  )}
+                </div>
                 <div className="flex items-center gap-1">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star

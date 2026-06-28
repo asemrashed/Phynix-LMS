@@ -50,7 +50,11 @@ export function CourseReviewForm({
         }),
       })
       onSubmitted?.(result)
-      toast.success(isUpdate ? "Review updated" : "Thank you for your review!")
+      toast.success(
+        isUpdate
+          ? "Review updated and sent for approval"
+          : "Thank you! Your review was submitted and is pending approval."
+      )
     } catch (err) {
       if (err instanceof ApiError && err.code === "CANNOT_REVIEW_YET") {
         toast.error(err.message)

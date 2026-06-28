@@ -119,7 +119,7 @@ export default function AdminCoursesPage() {
                 disabled={updatingId === course.id}
                 onClick={() => updateStatus(course, "ARCHIVED")}
               >
-                Archive
+                Hide
               </Button>
             )}
           </>

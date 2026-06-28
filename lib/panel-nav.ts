@@ -10,13 +10,8 @@ import {
   Settings,
   FileText,
   CreditCard,
-  Clock,
-  MessageSquare,
   Quote,
-  MessagesSquare,
-  Wallet,
   BadgeAlert,
-  Globe,
 } from "lucide-react"
 
 export interface PanelNavItem {
@@ -68,26 +63,19 @@ export const ADMIN_NAV: PanelNavGroup[] = [
     items: [
       { href: "/admin/courses", label: "Courses", icon: BookOpen },
       { href: "/admin/blog", label: "Blog", icon: FileText },
-      { href: "/admin/site", label: "Site Content", icon: Globe },
-      { href: "/admin/testimonials", label: "Testimonials", icon: Quote },
+      { href: "/admin/reviews", label: "Reviews", icon: Quote },
       { href: "/admin/certificates", label: "Certificates", icon: GraduationCap },
     ],
   },
   {
     group: "People",
-    items: [
-      { href: "/admin/users", label: "Users", icon: Users },
-      { href: "/admin/community", label: "Community", icon: MessagesSquare },
-      { href: "/admin/inquiries", label: "Contact Inquiries", icon: MessageSquare },
-    ],
+    items: [{ href: "/admin/users", label: "Users", icon: Users }],
   },
   {
     group: "Finance",
     items: [
       { href: "/admin/payments", label: "Payments", icon: CreditCard },
       { href: "/admin/payments/pending", label: "Pending Verification", icon: BadgeAlert },
-      { href: "/admin/payments/installments", label: "Installment Plans", icon: Clock },
-      { href: "/admin/payments/settings", label: "Payment Gateways", icon: Wallet },
     ],
   },
 ]

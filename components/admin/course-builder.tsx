@@ -42,7 +42,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { toast } from "sonner"
-import { ArrowLeft, ExternalLink, Plus, Trash2 } from "lucide-react"
+import { ArrowLeft, EyeOff, ExternalLink, Plus, Trash2 } from "lucide-react"
+
+type CourseSaveIntent = "draft" | "publish" | "hide"
 
 interface CourseBuilderProps {
   initialCourse?: AdminCourseDetail
@@ -209,88 +211,174 @@ export function CourseBuilder({ initialCourse, mode }: CourseBuilderProps) {
     setRefundDays(courseData.refundDays != null ? String(courseData.refundDays) : "")
   }
 
-  const saveMetadata = useCallback(async () => {
-    setSaving(true)
-    try {
-      const body = {
-        title,
-        slug: slug || slugify(title),
-        description,
-        subtitle: subtitle.trim() || undefined,
-        badgeLabel: badgeLabel.trim() || undefined,
-        highlights: normalizeHighlights(highlights),
-        faqs: normalizeFaqs(faqs),
-        discountEndsAt: discountEndsAt?.toISOString(),
-        seatLimit: seatLimit ? Number(seatLimit) : undefined,
-        startsAt: startsAt?.toISOString(),
-        classSchedule: classSchedule.trim() || undefined,
-        deliveryType: deliveryType.trim() || undefined,
-        refundDays: refundDays ? Number(refundDays) : undefined,
-        learningOutcomes: normalizeOutcomes(learningOutcomes),
-        thumbnailUrl: thumbnailUrl || undefined,
-        price: Number(price) || 0,
-        originalPrice: originalPrice ? Number(originalPrice) : undefined,
-        currency: COURSE_CURRENCY,
-        level,
-        language: COURSE_LANGUAGE,
-        isFeatured,
-      }
+  const saveCourse = useCallback(
+    async (intent: CourseSaveIntent = "draft", forcePublish = false) => {
+      setSaving(true)
+      try {
+        const body: Record<string, unknown> = {
+          title,
+          slug: slug || slugify(title),
+          description,
+          subtitle: subtitle.trim() || undefined,
+          badgeLabel: badgeLabel.trim() || undefined,
+          highlights: normalizeHighlights(highlights),
+          faqs: normalizeFaqs(faqs),
+          discountEndsAt: discountEndsAt?.toISOString(),
+          seatLimit: seatLimit ? Number(seatLimit) : undefined,
+          startsAt: startsAt?.toISOString(),
+          classSchedule: classSchedule.trim() || undefined,
+          deliveryType: deliveryType.trim() || undefined,
+          refundDays: refundDays ? Number(refundDays) : undefined,
+          learningOutcomes: normalizeOutcomes(learningOutcomes),
+          thumbnailUrl: thumbnailUrl || undefined,
+          price: Number(price) || 0,
+          originalPrice: originalPrice ? Number(originalPrice) : undefined,
+          currency: COURSE_CURRENCY,
+          level,
+          language: COURSE_LANGUAGE,
+          isFeatured,
+        }
 
-      if (stripHtml(description).length < 10) {
-        toast.error("Description must be at least 10 characters")
-        return null
-      }
+        if (intent === "draft") {
+          body.status = "DRAFT"
+        } else if (intent === "publish") {
+          body.status = "PUBLISHED"
+        } else if (intent === "hide") {
+          body.status = "ARCHIVED"
+        }
 
-      const parsed =
-        mode === "create" || !course
-          ? createCourseSchema.safeParse(body)
-          : updateCourseSchema.safeParse(body)
+        if (stripHtml(description).length < 10) {
+          toast.error("Description must be at least 10 characters")
+          return null
+        }
 
-      if (!parsed.success) {
-        toast.error(parsed.error.errors[0]?.message ?? "Invalid course data")
-        return null
-      }
+        if (intent === "publish") {
+          const publishCheckCourse: AdminCourseDetail = course
+            ? {
+                ...course,
+                title,
+                slug: slug || slugify(title),
+                description,
+                thumbnailUrl: thumbnailUrl || null,
+              }
+            : {
+                id: "",
+                title,
+                slug: slug || slugify(title),
+                description,
+                thumbnailUrl: thumbnailUrl || null,
+                sections: [],
+                status: "DRAFT",
+                subtitle: null,
+                badgeLabel: null,
+                highlights: [],
+                faqs: [],
+                discountEndsAt: null,
+                seatLimit: null,
+                startsAt: null,
+                classSchedule: null,
+                deliveryType: null,
+                refundDays: null,
+                learningOutcomes: [],
+                price: Number(body.price) || 0,
+                originalPrice: null,
+                currency: COURSE_CURRENCY,
+                level,
+                language: COURSE_LANGUAGE,
+                isFeatured,
+                instructorId: "",
+                instructorName: "",
+                totalDuration: 0,
+                enrollmentCount: 0,
+                publishedAt: null,
+                createdAt: "",
+                updatedAt: "",
+              }
 
-      if (mode === "create" || !course) {
-        const created = await api<AdminCourseDetail>("/admin/courses", {
-          method: "POST",
+          const issues = getCurriculumPublishIssues(publishCheckCourse)
+
+          if (issues.length > 0 && !forcePublish) {
+            setPublishIssues(issues)
+            setPublishIssuesOpen(true)
+            return null
+          }
+        }
+
+        const parsed =
+          mode === "create" || !course
+            ? createCourseSchema.safeParse(body)
+            : updateCourseSchema.safeParse(body)
+
+        if (!parsed.success) {
+          toast.error(parsed.error.errors[0]?.message ?? "Invalid course data")
+          return null
+        }
+
+        if (mode === "create" || !course) {
+          const created = await api<AdminCourseDetail>("/admin/courses", {
+            method: "POST",
+            body: JSON.stringify(parsed.data),
+          })
+
+          if (intent === "publish") {
+            const published = await api<AdminCourseDetail>(`/admin/courses/${created.id}`, {
+              method: "PATCH",
+              body: JSON.stringify({ status: "PUBLISHED" }),
+            })
+            setCourse(published)
+            setLearningOutcomes(
+              published.learningOutcomes.length > 0 ? published.learningOutcomes : [""]
+            )
+            syncMarketingFromCourse(published)
+            setIsDirty(false)
+            toast.success("Course published")
+            router.replace(`/admin/course/${published.slug}`)
+            setActiveTab("curriculum")
+            return published
+          }
+
+          setCourse(created)
+          setLearningOutcomes(
+            created.learningOutcomes.length > 0 ? created.learningOutcomes : [""]
+          )
+          syncMarketingFromCourse(created)
+          setIsDirty(false)
+          toast.success("Course created as draft")
+          router.replace(`/admin/course/${created.slug}`)
+          setActiveTab("curriculum")
+          return created
+        }
+
+        const updated = await api<AdminCourseDetail>(`/admin/courses/${course.id}`, {
+          method: "PATCH",
           body: JSON.stringify(parsed.data),
         })
-        setCourse(created)
+        setCourse(updated)
+        setSlug(updated.slug)
         setLearningOutcomes(
-          created.learningOutcomes.length > 0 ? created.learningOutcomes : [""]
+          updated.learningOutcomes.length > 0 ? updated.learningOutcomes : [""]
         )
-        syncMarketingFromCourse(created)
+        syncMarketingFromCourse(updated)
+        if (mode === "edit" && urlSlug && updated.slug !== urlSlug) {
+          router.replace(`/admin/course/${updated.slug}`)
+        }
         setIsDirty(false)
-        toast.success("Course created as draft")
-        router.replace(`/admin/course/${created.slug}`)
-        setActiveTab("curriculum")
-        return created
+        toast.success(
+          intent === "publish"
+            ? "Course published"
+            : intent === "hide"
+              ? "Course hidden from public site"
+              : "Draft saved"
+        )
+        return updated
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, "Failed to save course"))
+        return null
+      } finally {
+        setSaving(false)
       }
-
-      const updated = await api<AdminCourseDetail>(`/admin/courses/${course.id}`, {
-        method: "PATCH",
-        body: JSON.stringify(parsed.data),
-      })
-      setCourse(updated)
-      setSlug(updated.slug)
-      setLearningOutcomes(
-        updated.learningOutcomes.length > 0 ? updated.learningOutcomes : [""]
-      )
-      syncMarketingFromCourse(updated)
-      if (mode === "edit" && urlSlug && updated.slug !== urlSlug) {
-        router.replace(`/admin/course/${updated.slug}`)
-      }
-      setIsDirty(false)
-      toast.success("Draft saved")
-      return updated
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, "Failed to save course"))
-      return null
-    } finally {
-      setSaving(false)
-    }
-  }, [
+    },
+    [
     badgeLabel,
     classSchedule,
     course,
@@ -316,57 +404,9 @@ export function CourseBuilder({ initialCourse, mode }: CourseBuilderProps) {
     urlSlug,
   ])
 
-  const publishCourse = async (force = false) => {
-    let current = course
-    if (!current) {
-      const saved = await saveMetadata()
-      if (!saved) return
-      current = saved
-    } else if (isDirty) {
-      const saved = await saveMetadata()
-      if (!saved) return
-      current = saved
-    }
-
-    const issues = getCurriculumPublishIssues({
-      ...current,
-      title,
-      slug: slug || slugify(title),
-      description,
-      thumbnailUrl: thumbnailUrl || null,
-    })
-
-    if (issues.length > 0 && !force) {
-      setPublishIssues(issues)
-      setPublishIssuesOpen(true)
-      return
-    }
-
-    try {
-      const updated = await api<AdminCourseDetail>(`/admin/courses/${current!.id}`, {
-        method: "PATCH",
-        body: JSON.stringify({ status: "PUBLISHED" }),
-      })
-      setCourse(updated)
-      toast.success("Course published")
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, "Failed to publish course"))
-    }
-  }
-
-  const updateStatus = async (status: "DRAFT" | "ARCHIVED") => {
-    if (!course) return
-    try {
-      const updated = await api<AdminCourseDetail>(`/admin/courses/${course.id}`, {
-        method: "PATCH",
-        body: JSON.stringify({ status }),
-      })
-      setCourse(updated)
-      toast.success(`Course ${status.toLowerCase()}`)
-    } catch {
-      toast.error("Failed to update status")
-    }
-  }
+  const publishCourse = (force = false) => saveCourse("publish", force)
+  const hideCourse = () => saveCourse("hide")
+  const unpublishCourse = () => saveCourse("draft")
 
   const deleteCourse = async () => {
     if (!course) return
@@ -436,9 +476,34 @@ export function CourseBuilder({ initialCourse, mode }: CourseBuilderProps) {
                   </a>
                 </Button>
               )}
-              <Button className="rounded-xl" onClick={() => void saveMetadata()} disabled={saving}>
-                {saving ? "Saving…" : isDirty ? "Save draft" : "Save draft"}
+              <Button
+                variant="outline"
+                className="rounded-xl"
+                onClick={() => void saveCourse("draft")}
+                disabled={saving}
+              >
+                {saving ? "Saving…" : "Save draft"}
               </Button>
+              {(!course || course.status !== "PUBLISHED") && (
+                <Button
+                  className="rounded-xl"
+                  onClick={() => void publishCourse()}
+                  disabled={saving}
+                >
+                  {saving ? "Saving…" : "Publish"}
+                </Button>
+              )}
+              {course?.status === "PUBLISHED" && (
+                <Button
+                  variant="outline"
+                  className="rounded-xl"
+                  onClick={() => void hideCourse()}
+                  disabled={saving}
+                >
+                  <EyeOff className="mr-2 h-4 w-4" />
+                  Hide
+                </Button>
+              )}
               {course && (
                 <Button
                   variant="outline"
@@ -751,8 +816,8 @@ export function CourseBuilder({ initialCourse, mode }: CourseBuilderProps) {
               course={course}
               onCourseChange={setCourse}
               onPublish={() => void publishCourse()}
-              onUnpublish={() => void updateStatus("DRAFT")}
-              onArchive={() => void updateStatus("ARCHIVED")}
+              onUnpublish={() => void unpublishCourse()}
+              onHide={() => void hideCourse()}
             />
           ) : (
             <p className="text-sm text-muted-foreground">
@@ -821,7 +886,9 @@ export function CourseBuilder({ initialCourse, mode }: CourseBuilderProps) {
               {course && course.enrollmentCount > 0 && (
                 <span className="mt-2 block font-medium text-destructive">
                   Warning: {course.enrollmentCount} student
-                  {course.enrollmentCount === 1 ? "" : "s"} currently enrolled.
+                  {course.enrollmentCount === 1 ? "" : "s"} currently enrolled. Use Hide
+                  instead to remove the course from the public site while keeping student
+                  access.
                 </span>
               )}
             </AlertDialogDescription>

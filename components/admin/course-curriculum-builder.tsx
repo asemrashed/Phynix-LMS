@@ -136,7 +136,7 @@ interface CourseCurriculumBuilderProps {
   onCourseChange: React.Dispatch<React.SetStateAction<AdminCourseDetail | null>>
   onPublish?: () => void
   onUnpublish?: () => void
-  onArchive?: () => void
+  onHide?: () => void
 }
 
 export function CourseCurriculumBuilder({
@@ -144,7 +144,7 @@ export function CourseCurriculumBuilder({
   onCourseChange,
   onPublish,
   onUnpublish,
-  onArchive,
+  onHide,
 }: CourseCurriculumBuilderProps) {
   const sections = course.sections
   const [newSectionTitle, setNewSectionTitle] = useState("")
@@ -588,9 +588,9 @@ export function CourseCurriculumBuilder({
               Unpublish
             </Button>
           )}
-          {course.status === "PUBLISHED" && onArchive && (
-            <Button variant="outline" size="sm" className="rounded-xl" onClick={onArchive}>
-              Archive
+          {course.status === "PUBLISHED" && onHide && (
+            <Button variant="outline" size="sm" className="rounded-xl" onClick={onHide}>
+              Hide
             </Button>
           )}
         </div>
