@@ -26,7 +26,7 @@ export function AdminLessonVideoPreview({
   if (!ref) {
     return (
       <p className="rounded-xl border border-dashed bg-muted/30 px-3 py-4 text-center text-xs text-muted-foreground">
-        Upload a video file above to preview playback.
+        Add a YouTube link or upload a video file above to preview playback.
       </p>
     )
   }
@@ -38,26 +38,17 @@ export function AdminLessonVideoPreview({
           <Badge variant="outline" className="text-[10px]">
             Admin preview
           </Badge>
-          <span className="text-xs text-muted-foreground">YouTube lesson (saved reference)</span>
+          <span className="text-xs text-muted-foreground">YouTube lesson</span>
         </div>
-        {lesson.isFree ? (
-          <CourseLessonPreview
-            courseId={courseId}
-            lesson={{
-              id: lesson.id,
-              title: lesson.title,
-              type: lesson.type,
-              duration: lesson.duration,
-              order: lesson.order,
-              isFree: lesson.isFree,
-              previewAvailable: true,
-            }}
+        <div className="aspect-video overflow-hidden rounded-xl border bg-black">
+          <iframe
+            src={`https://www.youtube-nocookie.com/embed/${ref}`}
+            title={`YouTube preview: ${lesson.title}`}
+            className="h-full w-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
           />
-        ) : (
-          <p className="rounded-xl border bg-muted/30 px-3 py-4 text-xs text-muted-foreground">
-            Enable &quot;Free preview&quot; to test the student video player.
-          </p>
-        )}
+        </div>
       </div>
     )
   }

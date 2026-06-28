@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { cn } from "@/lib/utils"
 import { uploadCourseVideo } from "@/lib/upload"
+import { parseYoutubeId } from "@/lib/video-source"
 import { AdminLessonVideoPreview } from "@/components/admin/admin-lesson-video-preview"
 import { RichTextEditor } from "@/components/admin/rich-text-editor"
 import { TextLessonPreview } from "@/components/admin/text-lesson-preview"
@@ -58,6 +59,7 @@ import {
   Sparkles,
   Trash2,
   Upload,
+  Youtube,
 } from "lucide-react"
 
 const LESSON_TYPES: LessonType[] = ["VIDEO", "TEXT", "QUIZ"]
@@ -166,6 +168,7 @@ export function CourseCurriculumBuilder({
   const [lessonSaving, setLessonSaving] = useState(false)
   const [lessonSaved, setLessonSaved] = useState(true)
   const [videoUploading, setVideoUploading] = useState(false)
+  const [youtubeInput, setYoutubeInput] = useState("")
   const [deleteTarget, setDeleteTarget] = useState<
     | { kind: "section"; sectionId: string; title: string; lessonCount: number }
     | { kind: "lesson"; sectionId: string; lessonId: string; title: string }
@@ -215,6 +218,11 @@ export function CourseCurriculumBuilder({
         setLessonDraft({ ...lesson })
         setLessonSaved(true)
         setShowTextPreview(false)
+        if (lesson.videoProvider === "YOUTUBE" && lesson.videoRef) {
+          setYoutubeInput(`https://www.youtube.com/watch?v=${lesson.videoRef}`)
+        } else {
+          setYoutubeInput("")
+        }
       }
       selectedRef.current = selected
     }
@@ -282,6 +290,25 @@ export function CourseCurriculumBuilder({
         : prev
     )
     debouncedPersistLesson(selected.sectionId, selected.lessonId, patch)
+  }
+
+  const applyYoutubeLink = (value: string) => {
+    if (!lessonDraft || !selected) return
+    const trimmed = value.trim()
+    if (!trimmed) {
+      if (lessonDraft.videoProvider === "YOUTUBE" && lessonDraft.videoRef) {
+        updateLessonDraft({ videoProvider: "YOUTUBE", videoRef: null })
+      }
+      return
+    }
+    const id = parseYoutubeId(trimmed)
+    if (!id) {
+      toast.error("Enter a valid YouTube link or 11-character video ID")
+      return
+    }
+    if (lessonDraft.videoProvider === "YOUTUBE" && lessonDraft.videoRef === id) return
+    updateLessonDraft({ videoProvider: "YOUTUBE", videoRef: id })
+    setYoutubeInput(`https://www.youtube.com/watch?v=${id}`)
   }
 
   const addSection = async () => {
@@ -1073,7 +1100,49 @@ export function CourseCurriculumBuilder({
                     {/* Video source configuration */}
                     <div className="space-y-4 rounded-2xl border p-4 bg-slate-50/30 border-slate-100">
                       {selected && (
-                        <div className="space-y-3">
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label
+                              htmlFor="course-youtube-link"
+                              className="text-xs font-semibold text-slate-500 uppercase tracking-wider"
+                            >
+                              YouTube Link
+                            </Label>
+                            <Input
+                              id="course-youtube-link"
+                              type="url"
+                              placeholder="https://www.youtube.com/watch?v=..."
+                              className="rounded-xl border-slate-200 bg-white"
+                              value={youtubeInput}
+                              onChange={(e) => setYoutubeInput(e.target.value)}
+                              onBlur={(e) => applyYoutubeLink(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault()
+                                  applyYoutubeLink(youtubeInput)
+                                }
+                              }}
+                            />
+                            <p className="text-[10px] text-muted-foreground leading-relaxed mt-1">
+                              Paste a YouTube watch, embed, or shorts link — or an 11-character video ID.
+                            </p>
+                          </div>
+                          {lessonDraft.videoProvider === "YOUTUBE" && lessonDraft.videoRef && (
+                            <div className="flex items-center gap-2 rounded-xl border bg-red-50/40 border-red-100 px-3 py-2 text-xs font-medium text-red-800">
+                              <Youtube className="size-4 shrink-0 text-red-600" />
+                              <span>YouTube linked</span>
+                            </div>
+                          )}
+
+                          <div className="relative py-1">
+                            <div className="absolute inset-0 flex items-center">
+                              <span className="w-full border-t border-slate-200" />
+                            </div>
+                            <div className="relative flex justify-center text-[10px] uppercase tracking-wider">
+                              <span className="bg-slate-50 px-2 text-muted-foreground">or</span>
+                            </div>
+                          </div>
+
                           <div className="space-y-2">
                             <Label htmlFor="course-video-file" className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Upload Video File</Label>
                             <Input
@@ -1093,6 +1162,7 @@ export function CourseCurriculumBuilder({
                                   file
                                 )
                                   .then((result) => {
+                                    setYoutubeInput("")
                                     updateLessonDraft({
                                       videoProvider: result.videoProvider,
                                       videoRef: result.videoRef,
@@ -1110,7 +1180,7 @@ export function CourseCurriculumBuilder({
                               MP4, WebM, or MOV — max 500MB. Served via secure signed streams.
                             </p>
                           </div>
-                          {lessonDraft.videoRef && (
+                          {lessonDraft.videoProvider === "SELF_HOSTED" && lessonDraft.videoRef && (
                             <div className="flex items-center gap-2 rounded-xl border bg-emerald-50/30 border-emerald-100 px-3 py-2 text-xs font-medium text-emerald-800">
                               <Upload className="size-4 shrink-0 text-emerald-600" />
                               <span>Video uploaded</span>
