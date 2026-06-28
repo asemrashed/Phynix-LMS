@@ -422,7 +422,7 @@ export default function CourseDetailPage() {
               Course Overview
             </h2>
             <div
-              className="prose prose-neutral mb-6 max-w-none text-sm leading-relaxed text-neutral-600 md:text-base [&_a]:text-primary"
+              className="prose prose-neutral mb-6 max-w-none font-sans text-sm leading-relaxed text-neutral-600 md:text-base [&_a]:text-primary"
               dangerouslySetInnerHTML={{
                 __html: /<[a-z][\s\S]*>/i.test(course.description)
                   ? course.description

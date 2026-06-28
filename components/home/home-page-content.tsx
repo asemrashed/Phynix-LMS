@@ -24,7 +24,7 @@ const FinalCTASection = dynamic(
 )
 
 export function HomePageContent() {
-  const { stats, featuredCourses, blogPosts, testimonials, loading } = useHomepageData()
+  const { stats, featuredCourses, blogPosts, testimonials, courseReviews, loading } = useHomepageData()
   const sections = DEFAULT_HOMEPAGE_SECTIONS
 
   return (
@@ -39,6 +39,7 @@ export function HomePageContent() {
       <WhyChooseSection section={sections.why_choose} />
       <TestimonialsSection
         testimonials={testimonials}
+        courseReviews={courseReviews}
         isLoading={loading}
         section={sections.testimonials}
       />

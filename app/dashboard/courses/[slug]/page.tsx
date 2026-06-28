@@ -83,6 +83,8 @@ export default function CoursePlayerPage() {
     return data
   }, [slug])
 
+  const loadLessonRequestRef = useRef(0)
+
   const loadLesson = useCallback(
     async (lessonId: string, courseData: CourseDetail) => {
       const lesson = courseData.sections
@@ -90,6 +92,8 @@ export default function CoursePlayerPage() {
         .find((l) => l.id === lessonId)
 
       if (!lesson) return
+
+      const requestId = ++loadLessonRequestRef.current
 
       setLessonLoading(true)
       setVideoToken(null)
@@ -100,17 +104,22 @@ export default function CoursePlayerPage() {
           const token = await api<VideoTokenResponse>(
             `/courses/${courseData.id}/lessons/${lessonId}/token`
           )
+          if (requestId !== loadLessonRequestRef.current) return
           setVideoToken(token)
         } else {
           const detail = await api<StudentLessonDetail>(
             `/courses/${courseData.id}/lessons/${lessonId}`
           )
+          if (requestId !== loadLessonRequestRef.current) return
           setLessonDetail(detail)
         }
       } catch (err) {
+        if (requestId !== loadLessonRequestRef.current) return
         console.error("Failed to load lesson:", err)
       } finally {
-        setLessonLoading(false)
+        if (requestId === loadLessonRequestRef.current) {
+          setLessonLoading(false)
+        }
       }
     },
     []

@@ -14,7 +14,7 @@ export function TextLesson({ html, isCompleted, onComplete, saving }: TextLesson
   return (
     <div className="rounded-[20px] bg-card p-6 shadow-sm">
       <div
-        className="prose prose-sm max-w-none dark:prose-invert [&_h2]:text-xl [&_h2]:font-semibold [&_p]:mb-3 [&_ul]:list-disc [&_ul]:pl-6"
+        className="prose prose-sm max-w-none font-sans dark:prose-invert [&_h2]:text-xl [&_h2]:font-semibold [&_p]:mb-3 [&_ul]:list-disc [&_ul]:pl-6"
         dangerouslySetInnerHTML={{ __html: html }}
       />
       {!isCompleted && (

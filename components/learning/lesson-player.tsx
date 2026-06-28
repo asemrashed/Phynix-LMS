@@ -82,7 +82,12 @@ export function LessonPlayer({
     [courseId, lesson.id, onProgress]
   )
 
-  if (loading) {
+  const waitingForLesson =
+    lesson.type === "VIDEO"
+      ? !videoToken
+      : !lessonDetail || lessonDetail.id !== lesson.id
+
+  if (loading || waitingForLesson) {
     return (
       <div className="flex aspect-video items-center justify-center rounded-[20px] bg-muted">
         <Spinner className="h-8 w-8" />
@@ -102,9 +107,7 @@ export function LessonPlayer({
     )
   }
 
-  if (!lessonDetail) return null
-
-  if (lesson.type === "TEXT" && "html" in lessonDetail.content) {
+  if (lesson.type === "TEXT" && lessonDetail && "html" in lessonDetail.content) {
     return (
       <TextLesson
         html={lessonDetail.content.html}
@@ -115,7 +118,7 @@ export function LessonPlayer({
     )
   }
 
-  if (lesson.type === "QUIZ" && "questions" in lessonDetail.content) {
+  if (lesson.type === "QUIZ" && lessonDetail && "questions" in lessonDetail.content) {
     return (
       <QuizLesson
         content={lessonDetail.content as QuizLessonContent}

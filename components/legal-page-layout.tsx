@@ -20,7 +20,7 @@ export function LegalPageLayout({ title, description, children }: LegalPageLayou
 
       <div className="container mx-auto max-w-7xl px-4 py-10">
         <div className="rounded-[20px] border border-border/60 bg-card p-6 shadow-sm md:p-10">
-          <div className="prose prose-neutral max-w-none text-foreground dark:prose-invert prose-headings:font-semibold prose-headings:text-foreground prose-h2:mt-8 prose-h2:mb-3 prose-h2:text-xl prose-p:text-muted-foreground prose-li:text-muted-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline">
+          <div className="prose prose-neutral max-w-none font-sans text-foreground dark:prose-invert prose-headings:font-semibold prose-headings:text-foreground prose-h2:mt-8 prose-h2:mb-3 prose-h2:text-xl prose-p:text-muted-foreground prose-li:text-muted-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline">
             {children}
           </div>
         </div>

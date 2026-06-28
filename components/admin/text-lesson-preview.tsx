@@ -24,7 +24,7 @@ export function TextLessonPreview({ content }: TextLessonPreviewProps) {
 
   return (
     <div
-      className="prose prose-sm max-w-none rounded-xl border bg-muted/20 p-4 text-foreground dark:prose-invert"
+      className="prose prose-sm max-w-none rounded-xl border bg-muted/20 p-4 font-sans text-foreground dark:prose-invert"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   )

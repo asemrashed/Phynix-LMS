@@ -5,6 +5,7 @@ import { api } from "@/lib/api"
 import type {
   BlogPostListItem,
   CourseListItem,
+  HomepageCourseReviewItem,
   PlatformStats,
   TestimonialItem,
 } from "@fxprime/types"
@@ -20,6 +21,7 @@ export interface HomepageData {
   featuredCourses: CourseListItem[]
   blogPosts: BlogPostListItem[]
   testimonials: HomepageTestimonials
+  courseReviews: HomepageCourseReviewItem[]
   loading: boolean
 }
 
@@ -49,6 +51,7 @@ export function useHomepageData(): HomepageData {
     featuredCourses: [],
     blogPosts: [],
     testimonials: emptyTestimonials,
+    courseReviews: [],
     loading: true,
   })
 
@@ -63,6 +66,7 @@ export function useHomepageData(): HomepageData {
         api<TestimonialItem[]>("/testimonials?type=VIDEO"),
         api<TestimonialItem[]>("/testimonials?type=SCREENSHOT"),
         api<TestimonialItem[]>("/testimonials?type=TRUSTPILOT"),
+        api<HomepageCourseReviewItem[]>("/reviews?limit=6"),
       ])
 
       if (cancelled) return
@@ -77,6 +81,7 @@ export function useHomepageData(): HomepageData {
           screenshots: results[4].status === "fulfilled" ? results[4].value : [],
           trustpilot: results[5].status === "fulfilled" ? results[5].value : [],
         },
+        courseReviews: results[6].status === "fulfilled" ? results[6].value : [],
         loading: false,
       })
     }

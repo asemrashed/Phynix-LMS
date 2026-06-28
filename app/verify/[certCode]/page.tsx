@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import dynamic from "next/dynamic"
 import { useParams } from "next/navigation"
 import Link from "next/link"
 import { Navbar } from "@/components/navbar"
@@ -23,21 +22,7 @@ import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 import { getApiUrl, getSiteUrl } from "@/lib/seo"
 
-const CertificateVerifyQr = dynamic(
-  () =>
-    import("@/components/certificates/certificate-verify-qr").then(
-      (m) => m.CertificateVerifyQr
-    ),
-  {
-    ssr: false,
-    loading: () => (
-      <div
-        className="h-[180px] w-[180px] animate-pulse rounded-lg bg-muted"
-        aria-hidden
-      />
-    ),
-  }
-)
+const PLATFORM_NAME = "Phynix Education"
 
 function normalizeCertCode(raw: string | string[] | undefined): string {
   const value = Array.isArray(raw) ? raw[0] : raw
@@ -66,8 +51,6 @@ export default function VerifyCertificatePage() {
       typeof window !== "undefined" ? window.location.origin : getSiteUrl()
     setVerifyUrl(`${origin}/verify/${encodeURIComponent(certCode)}`)
   }, [certCode])
-
-  const qrValue = verifyUrl
 
   useEffect(() => {
     if (!certCode) {
@@ -107,7 +90,7 @@ export default function VerifyCertificatePage() {
   const shareLink = async () => {
     if (navigator.share) {
       await navigator.share({
-        title: "PhynixEducation Certificate",
+        title: `${PLATFORM_NAME} Certificate`,
         text: `Verify certificate for ${result?.studentName}`,
         url: verifyUrl,
       })
@@ -123,7 +106,7 @@ export default function VerifyCertificatePage() {
         <div className="mx-auto max-w-lg text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
             <Award className="h-4 w-4" />
-            PhynixEducation — Certificate Verification
+            {PLATFORM_NAME} — Certificate Verification
           </div>
         </div>
 
@@ -173,7 +156,7 @@ export default function VerifyCertificatePage() {
               </h1>
               <p className="mt-2 text-sm text-muted-foreground">
                 {result.valid
-                  ? "This certificate is officially issued by PhynixEducation"
+                  ? `This certificate is officially issued by ${PLATFORM_NAME}`
                   : "This certificate is no longer valid"}
               </p>
               <Badge
@@ -212,7 +195,7 @@ export default function VerifyCertificatePage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Platform</span>
-                  <span className="font-medium">PhynixEducation</span>
+                  <span className="font-medium">{PLATFORM_NAME}</span>
                 </div>
               </div>
 
@@ -233,21 +216,8 @@ export default function VerifyCertificatePage() {
                 </div>
               )}
 
-              <div className="flex flex-col items-center gap-3 rounded-xl bg-muted/40 p-5">
-                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Scan to verify
-                </p>
-                {qrValue ? (
-                  <CertificateVerifyQr value={qrValue} />
-                ) : (
-                  <div
-                    className="h-[180px] w-[180px] animate-pulse rounded-lg bg-muted"
-                    aria-hidden
-                  />
-                )}
-                <p className="max-w-full break-all text-center text-xs text-muted-foreground">
-                  {verifyUrl}
-                </p>
+              <div className="rounded-xl bg-muted/40 p-4">
+                <p className="text-center text-xs text-muted-foreground break-all">{verifyUrl}</p>
               </div>
 
               <div className="flex gap-2">

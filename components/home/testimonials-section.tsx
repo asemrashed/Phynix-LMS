@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react"
 import Image from "next/image"
 import { motion } from "framer-motion"
-import type { TestimonialItem, PublicHomepageSection } from "@fxprime/types"
+import type { TestimonialItem, PublicHomepageSection, HomepageCourseReviewItem } from "@fxprime/types"
 import { api } from "@/lib/api"
 import { getMediaUrl } from "@/lib/media-url"
+import { ReviewCard } from "@/components/review-card"
 import { SectionHeader } from "@/components/home/section-header"
 import { LandingContainer } from "@/components/home/landing-container"
 import type { HomepageTestimonials } from "@/lib/hooks/use-homepage-data"
@@ -109,12 +110,19 @@ function TrustpilotReviewCard({ item, index }: { item: TestimonialItem; index: n
   )
 }
 
+function studentAvatarUrl(name: string, avatar: string | null) {
+  if (avatar) return getMediaUrl(avatar)
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff`
+}
+
 export function TestimonialsSection({
   testimonials: externalTestimonials,
+  courseReviews: externalCourseReviews,
   isLoading: externalLoading,
   section,
 }: {
   testimonials?: HomepageTestimonials
+  courseReviews?: HomepageCourseReviewItem[]
   isLoading?: boolean
   section?: PublicHomepageSection | null
 } = {}) {
@@ -129,6 +137,9 @@ export function TestimonialsSection({
   const [trustpilot, setTrustpilot] = useState<TestimonialItem[]>(
     externalTestimonials?.trustpilot ?? []
   )
+  const [courseReviews, setCourseReviews] = useState<HomepageCourseReviewItem[]>(
+    externalCourseReviews ?? []
+  )
   const [loading, setLoading] = useState(!usesExternal)
 
   useEffect(() => {
@@ -136,18 +147,21 @@ export function TestimonialsSection({
       setVideo(externalTestimonials.video)
       setScreenshots(externalTestimonials.screenshots)
       setTrustpilot(externalTestimonials.trustpilot)
+      setCourseReviews(externalCourseReviews ?? [])
       return
     }
     async function load() {
       try {
-        const [v, s, t] = await Promise.all([
+        const [v, s, t, r] = await Promise.all([
           api<TestimonialItem[]>("/testimonials?type=VIDEO"),
           api<TestimonialItem[]>("/testimonials?type=SCREENSHOT"),
           api<TestimonialItem[]>("/testimonials?type=TRUSTPILOT"),
+          api<HomepageCourseReviewItem[]>("/reviews?limit=6"),
         ])
         setVideo(v)
         setScreenshots(s)
         setTrustpilot(t)
+        setCourseReviews(r)
       } catch (err) {
         console.error("Failed to load testimonials:", err)
       } finally {
@@ -155,10 +169,14 @@ export function TestimonialsSection({
       }
     }
     load()
-  }, [usesExternal, externalTestimonials])
+  }, [usesExternal, externalTestimonials, externalCourseReviews])
 
   const showLoading = usesExternal ? (externalLoading ?? false) : loading
-  const hasContent = video.length > 0 || screenshots.length > 0 || trustpilot.length > 0
+  const hasContent =
+    video.length > 0 ||
+    screenshots.length > 0 ||
+    trustpilot.length > 0 ||
+    courseReviews.length > 0
 
   return (
     <section className="py-20" aria-label="Student Success and Reviews">
@@ -213,6 +231,27 @@ export function TestimonialsSection({
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {trustpilot.map((item, index) => (
                     <TrustpilotReviewCard key={item.id} item={item} index={index} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {courseReviews.length > 0 && (
+              <div>
+                <h3 className="mb-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                  Student Reviews
+                </h3>
+                <div className="grid gap-6 md:grid-cols-2">
+                  {courseReviews.map((item) => (
+                    <ReviewCard
+                      key={item.id}
+                      name={item.studentName}
+                      image={studentAvatarUrl(item.studentName, item.studentAvatar)}
+                      rating={item.rating}
+                      review={item.review ?? ""}
+                      date={new Date(item.createdAt).toLocaleDateString()}
+                      course={item.courseName}
+                    />
                   ))}
                 </div>
               </div>

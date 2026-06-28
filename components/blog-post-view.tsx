@@ -21,7 +21,7 @@ function renderContent(content: string) {
   if (isHtmlContent(content)) {
     return (
       <div
-        className="[&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-bold [&_h3]:mt-6 [&_h3]:text-lg [&_h3]:font-semibold [&_p]:mb-4 [&_p]:text-muted-foreground [&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-muted-foreground"
+        className="[&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-bold [&_h3]:mt-6 [&_h3]:text-lg [&_h3]:font-semibold [&_p]:mb-4 [&_p]:text-muted-foreground [&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-muted-foreground font-sans"
         dangerouslySetInnerHTML={{ __html: content }}
       />
     )
@@ -168,7 +168,7 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
           />
         </div>
       ) : post.content ? (
-        <article className="prose prose-neutral mt-8 max-w-none dark:prose-invert">
+        <article className="prose prose-neutral mt-8 max-w-none font-sans dark:prose-invert">
           {renderContent(post.content)}
         </article>
       ) : null}

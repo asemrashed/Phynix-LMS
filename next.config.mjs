@@ -37,6 +37,7 @@ const nextConfig = {
       { protocol: "https", hostname: "phynixeducation.com", pathname: "/uploads/**" },
       { protocol: "https", hostname: "api.phynixeducation.com", pathname: "/uploads/**" },
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
+      { protocol: "https", hostname: "ui-avatars.com", pathname: "/api/**" },
       { protocol: "https", hostname: "img.youtube.com", pathname: "/vi/**" },
       { protocol: "https", hostname: "**.amazonaws.com", pathname: "/**" },
     ],
