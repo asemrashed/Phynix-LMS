@@ -4,9 +4,8 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import type { CourseDetail, CourseListItem } from "@fxprime/types"
 import { api } from "@/lib/api"
-import { resolveCourseOutcomes } from "@/lib/course-defaults"
 import { CourseCard } from "@/components/course-card"
-import { Award, CheckCircle2, ChevronRight } from "lucide-react"
+import { Award, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { formatCourseDuration } from "@/lib/format-duration"
 import { getMediaUrl } from "@/lib/media-url"
@@ -28,22 +27,8 @@ export function CourseDetailExtras({ course }: CourseDetailExtrasProps) {
       .catch(() => {})
   }, [course.slug])
 
-  const outcomes = resolveCourseOutcomes(course.language, course.learningOutcomes)
-
   return (
     <div className="mt-10 space-y-10">
-      <section>
-        <h2 className="text-xl font-bold text-foreground">What you&apos;ll learn</h2>
-        <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-          {outcomes.map((item) => (
-            <li key={item} className="flex items-start gap-2 text-sm text-foreground">
-              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-              {item}
-            </li>
-          ))}
-        </ul>
-      </section>
-
       <section className="rounded-[20px] bg-primary/5 p-6">
         <div className="flex items-start gap-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10">

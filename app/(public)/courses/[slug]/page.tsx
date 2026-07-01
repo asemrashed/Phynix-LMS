@@ -389,8 +389,8 @@ export default function CourseDetailPage() {
             </div>
           </div>
 
-          <div className="sticky top-16 z-30 -mx-4 border-b border-neutral-200/60 bg-white/95 px-4 py-1.5 backdrop-blur-md transition-all duration-200 sm:mx-0 sm:px-0">
-            <div className="flex gap-6 overflow-x-auto py-2 [scrollbar-width:none] md:gap-8 [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          <div className="sticky top-16 z-30 -mx-4 border-b border-neutral-200/60 bg-white/95 px-6 py-1.5 backdrop-blur-md transition-all duration-200 sm:mx-0">
+            <div className="flex w-full justify-between py-2">
               {tabs.map((tab) => {
                 const isActive = activeSection === tab.id
                 return (
